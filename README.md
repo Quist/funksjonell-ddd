@@ -15,7 +15,11 @@ Etter å vært med på dette har du forhåpentligvis:
 2. Modelere workflows som funksjoner
 
 ### Intro til oppgavene
-Velkommen til Reodor Felgen – et teknisk system bygget for å holde sykkelentusiaster i gang! Her jobber vi med å ta imot ordrer fra sykkelfrelste kunder og sørger for at riktige deler sendes ut til rett tid. Gjennom et strømlinjeformet ordre- og leveringssystem håndterer vi alt fra bestilling til utsendelse av sykkeldeler som tannhjul, bremser og gir. Målet? Å bygge en robust, effektiv løsning som gjør det enklere for både kunder og logistikksystemet vårt å få sykkeldelene raskt på veien igjen!" 🚴‍♂️💻🚴‍♀️
+Vi har fått et spennende oppdrag fra ingen ringere enn Magnus Midtpø. Magnus har nemlig besluttet å åpne en nettbutikk som skal selge klatreutstyr og T-skjorter – alt designet for å inspirere til å klatre høyere og sikrere!
+
+Men, som alt annet med Magnus, er dette ikke en helt standard butikk. Kundene hans sender inn uvaliderte bestillinger via YouTube Forms, og vårt system må derfor takle en jevn strøm av potensielt “kreative” ordredetaljer. Vårt oppdrag, som Magnus har så diplomatisk beskrevet det, er å sørge for at ordrene faktisk kan behandles og konverteres til noe som kan sendes ut av lageret.
+
+Så nå setter vi kursen mot å bygge en solid, fleksibel løsning for vår eventyrlystne klatrekonsulent. Klar til å henge i tauet og få Magnus til toppen – på en funksjonell og domenedrevet måte?
 
 #### Domenet oppsummert
 
@@ -25,7 +29,7 @@ Ulike kontekster i systemet (bounded contexts):
 
 #### Oppgaver 📋
 ##### 1a
-Reodor Felgen kjenner ikke til Int's og Strings. Modeller følgende konsepter:
+Magnus Midtpø kjenner ikke til Int's og Strings. Modeller følgende konsepter:
 * KundeId
 * OrdreId
 * Sykkeldel
@@ -35,4 +39,6 @@ Reodor Felgen kjenner ikke til Int's og Strings. Modeller følgende konsepter:
 Ved å modellere det på denne måten gjør vi det "umulig" å sende med en kundeId der det skulle være en ordreId og vica verca. Kompilatoren hjelper oss å holde styr på koden vår.
 
 ##### 1b
-Placeholder
+Implementer en av de første workflowen.
+
+
