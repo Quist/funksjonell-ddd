@@ -1,33 +1,70 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+import com.github.michaelbull.result.Result
 
-    val nyKunde = KundeId(2);
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+fun main(args: Array<String>) {
 }
 
 
-// Lagge byggeklosser for systemet
+// Lage byggeklosser for systemet
 
-// Simple types
-@JvmInline
-value class KundeId(val id: Int)
 
+// Produktkode
 @JvmInline
-value class Mengde(val mengde: Int)
+value class KlatreutstyrKode(val value: String)
 
 @JvmInline
-value class KilogramMengde(val mengde: Int)
+value class TskjorteKode(val value: String)
 
-// Complex data
+sealed class Produktkode {
+    data class Klatreutstyr(val kode: KlatreutstyrKode) : Produktkode()
+    data class Tskjorte(val kode: TskjorteKode) : Produktkode()
+}
+
+// Ordremengde typer
+@JvmInline
+value class Enhetsmengde(val value: Int)
+
+@JvmInline
+value class Kilogrammengde(val value: Float)
+
+sealed class OrdreMengde {
+    data class Enhet(val mengde: Enhetsmengde) : OrdreMengde()
+    data class Kilo(val mengde: Kilogrammengde) : OrdreMengde()
+}
+
+
+// Modelere en ordre
 data class Ordre(
-    private val leveringsaddresse: Leveringsadresse
-    // TODOﬁﬁ
+    private val id: OrdreId,
+    private val kundeId: KundeId,
+    private val leveringsadresse: Leveringsadresse,
+    private val fakturaAddresse: FakturaAddresse,
+    private val ordrelinjer: List<OrdrelinjeId>,
+    private val sumSomSkalBliBelastet: FakturaSum
 )
 
-typealias Kundeinfo = Nothing
+data class Ordrelinje(
+    private val id: OrdrelinjeId,
+    private val ordreId: OrdreId,
+    private val produktkode: Produktkode,
+    private val ordreMengde: OrdreMengde,
+    private val pris: Pris
+)
+
+typealias OrdreId = Nothing
+typealias KundeId = Nothing
 typealias Leveringsadresse = Nothing
-typealias Betalingsadresse = Nothing
-typealias Ordrelinje = Nothing
-typealias Regningssum = Nothing
+typealias FakturaAddresse = Nothing
+typealias OrdrelinjeId = Nothing
+typealias FakturaSum = Nothing
+typealias Pris = Nothing
+
+// Modelere Workflows
+
+typealias PlaserBestilling = (IkkeValidertBestilling) -> Result<String, String>
+
+// Representerer en bestilling som har kommet inn i systemet. Ingenting er validert enda, så kun primitive typer.
+data class IkkeValidertBestilling(
+    private val ordreId: String,
+    private val kundeinfo: String,
+    private val leveringsadresse: String
+)
