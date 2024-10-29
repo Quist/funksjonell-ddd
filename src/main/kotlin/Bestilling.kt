@@ -1,8 +1,7 @@
 import com.github.michaelbull.result.Result
 
-// Representerer vår først workflow. En funksjon som tar imot en "rå" bestilling og konverterer den til hendelser.
+// Representerer vår først workflow. En funksjon som tar en uvalidert bestilling og konverterer den til hendelser.
 typealias PlasserBestilling = (IkkeValidertBestilling) -> Result<BestillingPlassertHendelser, PlasserBestillingFeil>
-
 
 // Produktkode
 @JvmInline
@@ -17,11 +16,24 @@ sealed class Produktkode {
 }
 
 // Ordremengde typer
-@JvmInline
-value class Enhetsmengde(val value: Int)
+
+
 
 @JvmInline
-value class Kilogrammengde(val value: Float)
+value class Kilogrammengde private constructor(val value: Float) {
+    companion object {
+        fun of(value: Float): Kilogrammengde {
+            if (value <=0) {
+                throw IllegalStateException("Kilogrammengde må være positiv")
+            }
+            return Kilogrammengde(value)
+        }
+    }
+}
+
+// TODO Oppgave 2b: Implmenter logikk for å hindre at enhetsmengde kan være et ugyldig tall
+@JvmInline
+value class Enhetsmengde(val value: Int)
 
 sealed class OrdreMengde {
     data class Enhet(val mengde: Enhetsmengde) : OrdreMengde()
@@ -56,19 +68,18 @@ typealias FakturaSum = Nothing
 typealias Pris = Nothing
 
 
-
 // Representerer en bestilling som har kommet inn i systemet. Ingenting er validert enda, så kun primitive typer.
 data class IkkeValidertBestilling(
-    private val ordreId: String,
-    private val kundeinfo: String,
-    private val leveringsadresse: String
+    val ordreId: String,
+    val kundeinfo: String,
+    val leveringsadresse: String
 )
 
 // Representerer outputten av PlasserBestilling - ulike hendelser
 data class BestillingPlassertHendelser(
-    private val bekreftelseSent: Nothing,
-    private val ordrePlassert: Nothing,
-    private val FakturerbarOrdrePlassert: Nothing
+    val bekreftelseSent: Boolean,
+    val ordrePlassert: Boolean,
+    val fakturerbarOrdrePlassert: Boolean
 )
-typealias PlasserBestillingFeil = Nothing
+typealias PlasserBestillingFeil = String
 
