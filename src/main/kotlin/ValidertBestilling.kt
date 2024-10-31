@@ -1,4 +1,7 @@
 import com.github.michaelbull.result.Result
+import tjenester.ValidertAdresse
+import utils.NonEmptyList
+import java.lang.RuntimeException
 
 // Representerer vår først workflow. En funksjon som tar en uvalidert bestilling og konverterer den til hendelser.
 typealias PlasserBestilling = (IkkeValidertBestilling) -> Result<BestillingPlassertHendelser, PlasserBestillingFeil>
@@ -16,7 +19,6 @@ sealed class Produktkode {
 }
 
 // Ordremengde typer
-
 
 
 @JvmInline
@@ -41,15 +43,16 @@ sealed class OrdreMengde {
 }
 
 
-// Modelere en ordre
-data class Ordre(
+// Modelere en bestilling
+data class ValidertBestilling(
     private val id: OrdreId,
     private val kundeId: KundeId,
-    private val leveringsadresse: Leveringsadresse,
-    private val fakturaAddresse: FakturaAddresse,
-    private val ordrelinjer: List<OrdrelinjeId>,
+    private val leveringsadresse: ValidertAdresse,
+    private val fakturaAdFresse: FakturaAdresse,
+    private val ordrelinjer: NonEmptyList<Ordrelinje>, // Endre tilbake til vanlig list for å få testen til å feile.
     private val sumSomSkalBliBelastet: FakturaSum
-)
+) {
+}
 
 data class Ordrelinje(
     private val id: OrdrelinjeId,
@@ -59,21 +62,24 @@ data class Ordrelinje(
     private val pris: Pris
 )
 
-typealias OrdreId = Nothing
-typealias KundeId = Nothing
-typealias Leveringsadresse = Nothing
-typealias FakturaAddresse = Nothing
-typealias OrdrelinjeId = Nothing
-typealias FakturaSum = Nothing
-typealias Pris = Nothing
-
+typealias OrdreId = String
+typealias KundeId = Placeholder
+typealias FakturaAdresse = Placeholder
+typealias OrdrelinjeId = Placeholder
+typealias FakturaSum = Placeholder
+typealias Pris = Placeholder
+typealias Placeholder = String
 
 // Representerer en bestilling som har kommet inn i systemet. Ingenting er validert enda, så kun primitive typer.
 data class IkkeValidertBestilling(
     val ordreId: String,
     val kundeinfo: String,
-    val leveringsadresse: String
-)
+    val leveringsadresse: UvalidertAdresse,
+    val ordrelinjer: List<Ordrelinje>
+) {
+    data class Ordrelinje(val produktkode: String)
+    data class UvalidertAdresse(val adresselinje: String)
+}
 
 // Representerer outputten av PlasserBestilling - ulike hendelser
 data class BestillingPlassertHendelser(
@@ -83,3 +89,5 @@ data class BestillingPlassertHendelser(
 )
 typealias PlasserBestillingFeil = String
 
+// Exceptions
+public class UgyldigOrdreException : RuntimeException()

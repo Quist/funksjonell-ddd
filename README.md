@@ -53,6 +53,9 @@ Implementer/endre på en av de første workflowen.
 Magnus har nevnt at enhetsmengde alltid skal være mellom 1 og 1000. Implementer en integritetssjekk som gjør det umulig at en ordre kan inneholde mer enn 1000 enheter. 
 
 ##### Oppgave 2b - Konsistens
-Ordrelinjer kan ikke en tom liste. Hvordan sørge for dette? 
+Alle validerteBestillinger må ha minst en ordrelinje. Hvordan kan vi modellere domenet for å sørge for dette? Prøv å løs dette ved å endre på modellen (og konstruktører).
 
-Non-Empty List type
+> Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`
+
+##### Oppgave 2x Implementere forettningsregler ved å bruke typesystemet.
+TODO: Vurdere oppgave med hvordan modellere uverifiserte og verifiserte eposter. 
