@@ -60,3 +60,20 @@ Alle validerteBestillinger må ha minst en ordrelinje. Hvordan kan vi modellere 
 
 ##### Oppgave 2x Implementere forettningsregler ved å bruke typesystemet.
 TODO: Vurdere oppgave med hvordan modellere uverifiserte og verifiserte adresser. 
+
+
+#### Oppgave X -Videreutvikle designet 
+Vi ser på 4 forskjellige typer endringer:
+* Legge til et nytt steg i workflowen.
+* Legge til input i workflowen.
+* Endre definisjonen av en kjernetype og se hvordan det påvirker systemet.
+* Endre hele arbeidsflyten til å stemme med foretningregler. 
+
+#### Oppgave X_1 Legge til fraktkostnader
+
+#### Oppgave X_2 Legge til støtte for VIP-kunder
+
+#### Oppgave X_3 Legge til støtte for promokoder
+
+#### Oppgave X_4 Implementere søndagsstengt
+
