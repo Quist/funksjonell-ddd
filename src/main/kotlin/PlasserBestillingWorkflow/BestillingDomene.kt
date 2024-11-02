@@ -1,10 +1,24 @@
+package PlasserBestillingWorkflow
+
 import com.github.michaelbull.result.Result
-import tjenester.ValidertAdresse
 import utils.NonEmptyList
 import java.lang.RuntimeException
+import java.time.LocalDateTime
 
 // Representerer vår først workflow. En funksjon som tar en uvalidert bestilling og konverterer den til hendelser.
-typealias PlasserBestilling = (IkkeValidertBestilling) -> Result<BestillingPlassertHendelser, PlasserBestillingFeil>
+typealias PlasserBestilling = (Bestilling) -> Result<BestillingPlassertHendelser, Valideringsfeil>
+
+// Sub-workflows
+typealias ValiderBestilling = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer, IkkeValidertBestilling) -> Result<ValidertBestilling, Valideringsfeil>
+typealias PrisOrdre = (HentProduktPris) -> (ValidertBestilling) -> PrisetBestilling
+
+// Hjelpefunksjoner (typisk services i objekt-orienterte språk)
+typealias SjekkProduktKodeEksisterer = (String) -> Boolean
+typealias SjekkAdresseEksisterer = (String) -> Boolean
+typealias HentProduktPris = () -> Nothing
+
+
+data class Bestilling(val bestilling: IkkeValidertBestilling, val time: LocalDateTime, val userId: String)
 
 // Produktkode
 @JvmInline
@@ -48,11 +62,14 @@ data class ValidertBestilling(
     private val id: OrdreId,
     private val kundeId: KundeId,
     private val leveringsadresse: ValidertAdresse,
-    private val fakturaAdFresse: FakturaAdresse,
+    private val fakturaAdresse: FakturaAdresse,
     private val ordrelinjer: NonEmptyList<Ordrelinje>, // Endre tilbake til vanlig list for å få testen til å feile.
     private val sumSomSkalBliBelastet: FakturaSum
-) {
-}
+)
+
+data class ValidertAdresse(val adresselinje: String)
+
+data class PrisetBestilling(val tmp: String)
 
 data class Ordrelinje(
     private val id: OrdrelinjeId,
@@ -74,11 +91,10 @@ typealias Placeholder = String
 data class IkkeValidertBestilling(
     val ordreId: String,
     val kundeinfo: String,
-    val leveringsadresse: UvalidertAdresse,
-    val ordrelinjer: List<Ordrelinje>
+    val leveringsadresse: String,
+    val ordrelinjer: List<IkkeValidertOrdrelinje>
 ) {
-    data class Ordrelinje(val produktkode: String)
-    data class UvalidertAdresse(val adresselinje: String)
+    data class IkkeValidertOrdrelinje(val produktkode: String)
 }
 
 // Representerer outputten av PlasserBestilling - ulike hendelser
@@ -87,7 +103,7 @@ data class BestillingPlassertHendelser(
     val ordrePlassert: Boolean,
     val fakturerbarOrdrePlassert: Boolean
 )
-typealias PlasserBestillingFeil = String
+typealias Valideringsfeil = String
 
 // Exceptions
-public class UgyldigOrdreException : RuntimeException()
+public class UgyldigOrdreException(validationMessage: String) : RuntimeException(validationMessage)

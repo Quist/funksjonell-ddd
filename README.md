@@ -1,20 +1,21 @@
 # Domene Dreven Design - med funksjonelle briller 👓
-
-## Agenda
-1. Introduksjon til DDD (se presentasjon)
-2. Introduksjon til DDD med funksjonelle briller på
-3. Intro til workshop
+Workshop for faggruppen Arkitektur i praksis 2024.
 
 Etter å vært med på dette har du forhåpentligvis:
 * Lært litt om DDD og hvilke fordeler en slik tankegang og arkitektur medbringer.
 * Sett hvordan funksjonell tankegang går hand-i-hanske med workflow-prinsippet til DDD.
 * Testet å kode litt både funksjonelt og domene-drevet
 
-## Oppgaveutkast
+## Agenda
+1. Introduksjon til DDD (Henrik)
+2. Domenedreven design made functional (Joakim)
+3. Intro til workshop
+
+## 👩‍💻 Oppgaver
 1. Modelere simple typer
 2. Modelere workflows som funksjoner
 
-### Intro til oppgavene
+### 💡 Introduksjon
 Vi har fått et spennende oppdrag fra ingen ringere enn Magnus Midtpø. Magnus har nemlig besluttet å åpne en nettbutikk som skal selge klatreutstyr og T-skjorter – alt designet for å inspirere til å klatre høyere og sikrere!
 
 Men, som alt annet med Magnus, er dette ikke en helt standard butikk. Kundene hans sender inn uvaliderte bestillinger via YouTube Forms, og vårt system må derfor takle en jevn strøm av potensielt “kreative” ordredetaljer. Vårt oppdrag, som Magnus har så diplomatisk beskrevet det, er å sørge for at ordrene faktisk kan behandles og konverteres til noe som kan sendes ut av lageret.
@@ -58,4 +59,4 @@ Alle validerteBestillinger må ha minst en ordrelinje. Hvordan kan vi modellere 
 > Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`
 
 ##### Oppgave 2x Implementere forettningsregler ved å bruke typesystemet.
-TODO: Vurdere oppgave med hvordan modellere uverifiserte og verifiserte eposter. 
+TODO: Vurdere oppgave med hvordan modellere uverifiserte og verifiserte adresser. 
