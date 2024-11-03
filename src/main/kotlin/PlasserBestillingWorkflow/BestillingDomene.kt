@@ -6,7 +6,7 @@ import java.lang.RuntimeException
 import java.time.LocalDateTime
 
 // Representerer vår først workflow. En funksjon som tar en uvalidert bestilling og konverterer den til hendelser.
-typealias PlasserBestilling = (Bestilling) -> Result<BestillingPlassertHendelser, Valideringsfeil>
+typealias PlasserBestillingWorkflow = (Bestilling) -> Result<BestillingPlassertHendelser, Valideringsfeil>
 
 // Sub-workflows
 typealias ValiderBestilling = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer, IkkeValidertBestilling) -> Result<ValidertBestilling, Valideringsfeil>
@@ -94,7 +94,7 @@ data class IkkeValidertBestilling(
     val leveringsadresse: String,
     val ordrelinjer: List<IkkeValidertOrdrelinje>
 ) {
-    data class IkkeValidertOrdrelinje(val produktkode: String)
+    data class IkkeValidertOrdrelinje(val produktkode: String, val mengde: Number)
 }
 
 // Representerer outputten av PlasserBestilling - ulike hendelser

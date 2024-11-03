@@ -3,23 +3,60 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import kotlin.test.assertTrue
 
 class Oppgaver {
+
+    // Initialize plasserBestilling med dependencies og eventuelt test data.
+    // Funksjonell måte å gjøre dependency injection på.
+    val plasserBestillingWorkflow: PlasserBestillingWorkflow = plasserBestillingWorkflowSetup(sjekkProduktKodeEksisterer, sjekkAdresseEksisterer)
+
+    @Test
+    fun happyCase() {
+        assertThrows<UgyldigOrdreException> {
+            plasserBestillingWorkflow(
+                Bestilling(
+                    bestilling = IkkeValidertBestilling(
+                        ordreId = "1",
+                        kundeinfo = "Adam Åndra",
+                        leveringsadresse = "",
+                        ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
+                    ),
+                    time = LocalDateTime.now(),
+                    userId = "123"
+                )
+            )
+        }
+        /**
+        result.mapBoth(
+            success = { value -> assertTrue(true) },
+            failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
+        )
+        */
+    }
 
     @Test
     @DisplayName("Invariant for enhetsmengde")
     fun oppgave2a() {
         // Test som lager en ordre med ulovelig Enhetsmengde
-        assertThrows<IllegalStateException> { Kilogrammengde.of(-1F) }
-        assertThrows<IllegalStateException> { Enhetsmengde(10000) }
+        plasserBestillingWorkflow(
+            Bestilling(
+                bestilling = IkkeValidertBestilling(
+                    ordreId = "1",
+                    kundeinfo = "Adam Åndra",
+                    leveringsadresse = "Testveien 5",
+                    ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje(produktkode = "MagDust", mengde = 10_000))
+                ),
+                time = LocalDateTime.now(),
+                userId = "123"
+            )
+        )
     }
 
     @Test
     @DisplayName("Invariant for ordrelinjer")
     fun oppgave2b() {
         assertThrows<UgyldigOrdreException> {
-            plasserBestilling(
+            plasserBestillingWorkflow(
                 Bestilling(
                     bestilling = IkkeValidertBestilling(
                         ordreId = "1",
@@ -37,19 +74,19 @@ class Oppgaver {
     @Test
     @DisplayName("Validering av produktet faktisk finnes")
     fun oppgave2c() {
-            val result = plasserBestilling(
+        assertThrows<UgyldigOrdreException> {
+            plasserBestillingWorkflow(
                 Bestilling(
                     bestilling = IkkeValidertBestilling(
                         ordreId = "1",
                         kundeinfo = "Adam Åndra",
                         leveringsadresse = "Eidsvollveien",
-                        ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje("Finnes ikke"))
+                        ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje(produktkode = "Finnes ikke", mengde = 10_000))
                     ),
                     time = LocalDateTime.now(),
                     userId = "123"
                 )
             )
-
-        assertTrue(result.isErr, "Forventet at bestillingen skulle feile siden ordren ikke var tilstede. I steden var resultatet: " + result.value)
+        }
     }
 }

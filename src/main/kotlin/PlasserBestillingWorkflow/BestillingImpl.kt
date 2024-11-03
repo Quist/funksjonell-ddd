@@ -4,24 +4,30 @@ import com.github.michaelbull.result.*
 import utils.NonEmptyList
 import java.lang.RuntimeException
 
-// Eksempelimplementasjon av PlasserBestilling
+// Eksempelimplementasjon av PlasserBestillingWorkflow
 
-val plasserBestilling: PlasserBestilling = { bestilling: Bestilling ->
+val plasserBestillingWorkflow: PlasserBestillingWorkflow = { bestilling: Bestilling ->
     validerBestilling(
         sjekkProduktKodeEksisterer,
         sjekkAdresseEksisterer,
         bestilling.bestilling
-    )
-        .andThen {
-            Ok(
-                BestillingPlassertHendelser(
-                    bekreftelseSent = true,
-                    ordrePlassert = true,
-                    fakturerbarOrdrePlassert = true
-                )
+    ).andThen {
+        Ok(
+            BestillingPlassertHendelser(
+                bekreftelseSent = true,
+                ordrePlassert = true,
+                fakturerbarOrdrePlassert = true
             )
-        }
+        )
+    }
 }
+
+typealias PlasserBestillingWorkflowSetup = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer) -> PlasserBestillingWorkflow
+
+val plasserBestillingWorkflowSetup: PlasserBestillingWorkflowSetup =
+    { sjekkProduktKodeEksisterer, sjekkAdresseEksisterer ->
+        plasserBestillingWorkflow
+    }
 
 private val validerBestilling: ValiderBestilling =
     { sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
@@ -29,8 +35,8 @@ private val validerBestilling: ValiderBestilling =
       bestilling: IkkeValidertBestilling -> // Input
 
         val tilProduktKode = { produktKode: String ->
-            if (sjekkProduktKodeEksisterer(produktKode)) {
-                throw RuntimeException("Ugyldig kode") // TODO Replace with result type
+            if (!sjekkProduktKodeEksisterer(produktKode)) {
+                throw UgyldigOrdreException("Ugyldig kode") // TODO Replace with result type
             }
             Produktkode.Klatreutstyr(KlatreutstyrKode(produktKode))
         }
@@ -47,7 +53,7 @@ private val validerBestilling: ValiderBestilling =
             if (sjekkAdresseEksisterer(adresselinje)) {
                 ValidertAdresse(adresselinje)
             } else {
-                throw RuntimeException("Ugyldig adresse")
+                throw UgyldigOrdreException("Ugyldig adresse")
             }
 
         }
@@ -66,5 +72,8 @@ private val validerBestilling: ValiderBestilling =
 
 
 // Hjelpefunksjoner
-val sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer = { produktKode -> produktKode == "VALID_CODE" }
+val sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer = { produktKode ->
+    val gyldigeProdukter = setOf("MagDust", "Magnus Tskjorte")
+    produktKode in gyldigeProdukter
+}
 val sjekkAdresseEksisterer: SjekkAdresseEksisterer = { adresse -> adresse.isNotEmpty() }
