@@ -25,6 +25,35 @@ Så nå setter vi kursen mot å bygge en solid, fleksibel løsning for vår even
 ![](https://files.oaiusercontent.com/file-CdsPb5yyLyyWBoxR5aIty4tB?se=2024-10-29T23%3A32%3A07Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D05a0f24b-d073-492b-b171-a61741cb9c05.webp&sig=6hsHBthjSE7evKdTFGKwV1CzrvixuennFkdg4T1kzQc%3D)
 
 
+#### Bestillingskontekst (Bounded Context)
+```mermaid
+---
+title: Bestillingskontekst
+---
+flowchart LR
+    UvalidertBestilling[Uvalidert Bestilling]
+    Validate[Valider]
+    Pris[Pris bestilling]
+    Bekreft[Bekreft bestilling]
+    OnFailure([Ved feil: Feilliste])
+    Sideeffekter["`Sideffekter:
+    Send bestilling
+    Bekreftelse`"]
+    OnSuccess["`Suksess:
+    Bestillingsbekreftelse sendt
+    Bestilling plassert
+    FakturerbarBestilling lassert`"]
+    
+    UvalidertBestilling --> Validate
+    subgraph Bestillingskontekst
+        Validate --> Pris
+        Pris --> Bekreft
+    end
+    Bekreft --> Sideeffekter
+    Bekreft --> OnSuccess
+    Bekreft --> OnFailure
+
+```
 #### Domenet oppsummert
 
 Ulike kontekster i systemet (bounded contexts):
