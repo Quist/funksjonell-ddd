@@ -1,0 +1,48 @@
+package PlasserBestillingWorkflow
+
+@JvmInline
+value class OrdreId private constructor(val value: String) {
+    companion object {
+        fun of(value: String): OrdreId {
+            if (value.isEmpty()) {
+                throw IllegalStateException("OrdreId må ha innhold")
+            }
+            return OrdreId(value)
+        }
+    }
+}
+
+// Produktkode
+@JvmInline
+value class KlatreutstyrKode(val value: String)
+
+@JvmInline
+value class TskjorteKode(val value: String)
+
+sealed class Produktkode {
+    data class Klatreutstyr(val kode: KlatreutstyrKode) : Produktkode()
+    data class Tskjorte(val kode: TskjorteKode) : Produktkode()
+}
+
+// Ordremengde typer
+
+@JvmInline
+value class Kilogrammengde private constructor(val value: Float) {
+    companion object {
+        fun of(value: Float): Kilogrammengde {
+            if (value <=0) {
+                throw IllegalStateException("Kilogrammengde må være positiv")
+            }
+            return Kilogrammengde(value)
+        }
+    }
+}
+
+// TODO Oppgave 2b: Implmenter logikk for å hindre at enhetsmengde kan være et ugyldig tall
+@JvmInline
+value class Enhetsmengde(val value: Int)
+
+sealed class OrdreMengde {
+    data class Enhet(val mengde: Enhetsmengde) : OrdreMengde()
+    data class Kilo(val mengde: Kilogrammengde) : OrdreMengde()
+}

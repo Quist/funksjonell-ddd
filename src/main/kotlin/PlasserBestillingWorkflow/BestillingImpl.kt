@@ -2,78 +2,99 @@ package PlasserBestillingWorkflow
 
 import com.github.michaelbull.result.*
 import utils.NonEmptyList
-import java.lang.RuntimeException
 
 // Eksempelimplementasjon av PlasserBestillingWorkflow
 
-val plasserBestillingWorkflow: PlasserBestillingWorkflow = { bestilling: Bestilling ->
-    validerBestilling(
-        sjekkProduktKodeEksisterer,
-        sjekkAdresseEksisterer,
-        bestilling.bestilling
-    ).andThen {
-        Ok(
-            BestillingPlassertHendelser(
-                bekreftelseSent = true,
-                ordrePlassert = true,
-                fakturerbarOrdrePlassert = true
-            )
-        )
-    }
-}
-
 typealias PlasserBestillingWorkflowSetup = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer) -> PlasserBestillingWorkflow
-
 val plasserBestillingWorkflowSetup: PlasserBestillingWorkflowSetup =
     { sjekkProduktKodeEksisterer, sjekkAdresseEksisterer ->
-        plasserBestillingWorkflow
+        { bestilling: Bestilling ->
+            validerBestilling(
+                sjekkProduktKodeEksisterer,
+                sjekkAdresseEksisterer,
+                bestilling.bestilling
+            ).andThen {
+                Ok(
+                    BestillingPlassertHendelser(
+                        bekreftelseSent = true,
+                        ordrePlassert = true,
+                        fakturerbarOrdrePlassert = true
+                    )
+                )
+            }
+        }
     }
 
+// Valider Bestilling steg
+typealias ValiderBestilling = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer, IkkeValidertBestilling) -> Result<ValidertBestilling, Valideringsfeil>
 private val validerBestilling: ValiderBestilling =
     { sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
       sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
       bestilling: IkkeValidertBestilling -> // Input
-
-        val tilProduktKode = { produktKode: String ->
-            if (!sjekkProduktKodeEksisterer(produktKode)) {
-                throw UgyldigOrdreException("Ugyldig kode") // TODO Replace with result type
-            }
-            Produktkode.Klatreutstyr(KlatreutstyrKode(produktKode))
-        }
-        val tilValidertOrdrelinje = { ordrelinje: IkkeValidertBestilling.IkkeValidertOrdrelinje ->
-            Ordrelinje(
-                id = "",
-                ordreId = "",
-                produktkode = tilProduktKode(ordrelinje.produktkode),
-                ordreMengde = OrdreMengde.Enhet(Enhetsmengde(2)),
-                pris = ""
-            )
-        }
-        val tilValidertAdresse = { adresselinje: String ->
-            if (sjekkAdresseEksisterer(adresselinje)) {
-                ValidertAdresse(adresselinje)
-            } else {
-                throw UgyldigOrdreException("Ugyldig adresse")
-            }
-
-        }
-
         Ok(
             ValidertBestilling(
-                id = bestilling.ordreId,
+                ordreId = OrdreId.of(bestilling.ordreId),
                 fakturaAdresse = "placeholder",
                 kundeId = "placeholder",
-                leveringsadresse = tilValidertAdresse(bestilling.leveringsadresse),
-                ordrelinjer = NonEmptyList.fromList(bestilling.ordrelinjer.map { tilValidertOrdrelinje(it) }),
+                leveringsadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.leveringsadresse),
+                ordrelinjer = NonEmptyList.fromList(bestilling.ordrelinjer.map {
+                    tilValidertValidertOrdrelinje(
+                        tilProduktKode(
+                            sjekkProduktKodeEksisterer
+                        ), it
+                    )
+                }),
                 sumSomSkalBliBelastet = "Nothing"
             )
         )
     }
 
+private val tilValidertValidertOrdrelinje =
+    { tilProduktKode: (String) -> Produktkode, ordrelinje: IkkeValidertBestilling.IkkeValidertOrdrelinje ->
+        ValidertOrdrelinje(
+            produktkode = tilProduktKode(ordrelinje.produktkode),
+            ordreMengde = OrdreMengde.Enhet(Enhetsmengde(2)),
+            pris = ""
+        )
+    }
 
-// Hjelpefunksjoner
-val sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer = { produktKode ->
-    val gyldigeProdukter = setOf("MagDust", "Magnus Tskjorte")
-    produktKode in gyldigeProdukter
+private val tilProduktKode = { sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer ->
+    { produktKode: String ->
+        if (!sjekkProduktKodeEksisterer(produktKode)) {
+            throw UgyldigOrdreException("Ugyldig kode") // TODO Replace with result type
+        }
+        Produktkode.Klatreutstyr(KlatreutstyrKode(produktKode))
+    }
 }
-val sjekkAdresseEksisterer: SjekkAdresseEksisterer = { adresse -> adresse.isNotEmpty() }
+
+private val tilValidertAdresse = { sjekkAdresseEksisterer: SjekkAdresseEksisterer, adresselinje: String ->
+    if (sjekkAdresseEksisterer(adresselinje)) { // Kall den eksterne tjenesten
+        ValidertAdresse(adresselinje)
+    } else {
+        throw UgyldigOrdreException("Ugyldig adresse")
+    }
+}
+
+data class ValidertBestilling(
+    private val ordreId: OrdreId,
+    private val kundeId: KundeId,
+    private val leveringsadresse: ValidertAdresse,
+    private val fakturaAdresse: FakturaAdresse,
+    private val ordrelinjer: NonEmptyList<ValidertOrdrelinje>, // TODO Endre tilbake til vanlig list for å få testen til å feile.
+    private val sumSomSkalBliBelastet: FakturaSum
+)
+data class ValidertOrdrelinje(
+    private val produktkode: Produktkode,
+    private val ordreMengde: OrdreMengde,
+    private val pris: Pris
+)
+
+data class ValidertAdresse(val adresselinje: String)
+
+// Sub-workflows TODO: Plasser der de hører hjemme?
+typealias PrisOrdre = (HentProduktPris) -> (ValidertBestilling) -> PrisetBestilling
+
+// Hjelpefunksjoner (typisk services i objekt-orienterte språk)
+typealias SjekkProduktKodeEksisterer = (String) -> Boolean
+typealias SjekkAdresseEksisterer = (String) -> Boolean
+typealias HentProduktPris = () -> Nothing
