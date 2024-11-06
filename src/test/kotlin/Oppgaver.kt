@@ -3,9 +3,11 @@ import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.mapBoth
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
+import kotlin.test.Ignore
 import kotlin.test.junit5.JUnit5Asserter.fail
 
 class Oppgaver {
@@ -16,64 +18,23 @@ class Oppgaver {
         plasserBestillingWorkflowSetup(sjekkProduktKodeEksisterer, sjekkAdresseEksisterer)
 
     @Test
-    fun happyCase() {
-        val result = plasserBestillingWorkflow(eksempelBestilling)
-        result.mapBoth(
-            success = { value -> assertTrue(true) },
-            failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
-        )
-    }
-
-    @Test
-    @DisplayName("OrdreId kan ikke være tom")
-    fun ordreIdValideres() {
-        assertThrows<UgyldigOrdreException> {
-            plasserBestillingWorkflow(
-                eksempelBestilling.copy(
-                    bestilling = eksempelBestilling.bestilling.copy(ordreId = "")
-                )
-            )
-        }
-    }
-
-    @Test
-    @DisplayName("Adresser skal valideres")
-    fun adresserIOrdreValideres() {
-        assertThrows<UgyldigAdresse> {
-            plasserBestillingWorkflow(
-                eksempelBestilling.copy(
-                    bestilling = eksempelBestilling.bestilling.copy(leveringsadresse = "")
-                )
-            )
-        }
-
-        assertThrows<UgyldigAdresse> {
-            plasserBestillingWorkflow(
-                eksempelBestilling.copy(
-                    bestilling = eksempelBestilling.bestilling.copy(fakturadresse = "")
-                )
-            )
-        }
-    }
-
-
-    @Test
-    @DisplayName("Invariant for enhetsmengde")
+    @Ignore
+    @DisplayName("Ugyldige enhetsmengder valideres")
     fun oppgave2a() {
         // Test som lager en ordre med ulovlig Enhetsmengde
-        // TODO Denne skal feile
-        plasserBestillingWorkflow(
-            eksempelBestilling.copy(
-                bestilling = eksempelBestilling.bestilling.copy(
-                    ordrelinjer = listOf(
-                        IkkeValidertOrdrelinje(
-                            produktkode = "MagDust",
-                            mengde = 10_000
-                        )
-                    )
+        val bestilling = eksempelBestilling.bestilling.copy(
+            ordrelinjer = listOf(
+                IkkeValidertOrdrelinje(
+                    produktkode = "MagDust",
+                    mengde = 10_000
                 )
             )
         )
+        assertThrows<UgyldigAdresse> {
+            plasserBestillingWorkflow(
+                eksempelBestilling.copy(bestilling = bestilling)
+            )
+        }
     }
 
     @Test
@@ -117,6 +78,51 @@ class Oppgaver {
                     )
                 )
             )
+        }
+    }
+
+    @Nested
+    @DisplayName("Implementasjons tester - ikke en del av oppgavene")
+    inner class Tester {
+        @Test
+        fun happyCase() {
+            val result = plasserBestillingWorkflow(eksempelBestilling)
+            result.mapBoth(
+                success = { value -> assertTrue(true) },
+                failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
+            )
+        }
+
+        @Test
+        @DisplayName("OrdreId kan ikke være tom")
+        fun ordreIdValideres() {
+            assertThrows<UgyldigOrdreException> {
+                plasserBestillingWorkflow(
+                    eksempelBestilling.copy(
+                        bestilling = eksempelBestilling.bestilling.copy(ordreId = "")
+                    )
+                )
+            }
+        }
+
+        @Test
+        @DisplayName("Adresser skal valideres")
+        fun adresserIOrdreValideres() {
+            assertThrows<UgyldigAdresse> {
+                plasserBestillingWorkflow(
+                    eksempelBestilling.copy(
+                        bestilling = eksempelBestilling.bestilling.copy(leveringsadresse = "")
+                    )
+                )
+            }
+
+            assertThrows<UgyldigAdresse> {
+                plasserBestillingWorkflow(
+                    eksempelBestilling.copy(
+                        bestilling = eksempelBestilling.bestilling.copy(fakturadresse = "")
+                    )
+                )
+            }
         }
     }
 }

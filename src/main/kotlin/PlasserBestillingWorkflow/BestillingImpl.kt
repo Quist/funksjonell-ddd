@@ -57,19 +57,21 @@ private val tilValiderteOrdrelinjer = fun(tilProduktKode: (String) -> Produktkod
     })
 }
 
-private val tilValidertValidertOrdrelinje =
-    { tilProduktKode: (String) -> Produktkode, ordrelinje: IkkeValidertOrdrelinje ->
-        ValidertOrdrelinje(
-            produktkode = tilProduktKode(ordrelinje.produktkode),
-            ordreMengde = OrdreMengde.Enhet(Enhetsmengde(2)),
-            pris = ""
-        )
-    }
+private val tilValidertValidertOrdrelinje = fun(
+    tilProduktKode: (String) -> Produktkode, // Dependency
+    ordrelinje: IkkeValidertOrdrelinje // Input
+): ValidertOrdrelinje {
+    return ValidertOrdrelinje(
+        produktkode = tilProduktKode(ordrelinje.produktkode),
+        ordreMengde = OrdreMengde.Enhet(Enhetsmengde(ordrelinje.mengde)),
+        pris = ""
+    )
+}
 
 private val tilProduktKode = { sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer ->
     { produktKode: String ->
         if (!sjekkProduktKodeEksisterer(produktKode)) {
-            throw UgyldigOrdreException("Ugyldig kode") // TODO Replace with result type
+            throw UgyldigOrdreException("Ugyldig kode")
         }
         Produktkode.Klatreutstyr(KlatreutstyrKode(produktKode))
     }
