@@ -5,9 +5,21 @@ value class OrdreId private constructor(val value: String) {
     companion object {
         fun of(value: String): OrdreId {
             if (value.isEmpty()) {
-                throw IllegalStateException("OrdreId må ha innhold")
+                throw UgyldigOrdreException("OrdreId må ha innhold")
             }
             return OrdreId(value)
+        }
+    }
+}
+
+@JvmInline
+value class KundeId private constructor(val value: String) {
+    companion object {
+        fun of(value: String): KundeId {
+            if (value.isEmpty()) {
+                throw UgyldigOrdreException("KundeID må våre 8 tegn langt")
+            }
+            return KundeId(value)
         }
     }
 }

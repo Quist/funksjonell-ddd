@@ -1,10 +1,11 @@
 package PlasserBestillingWorkflow
 
+import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.*
 import utils.NonEmptyList
 
 // Eksempelimplementasjon av PlasserBestillingWorkflow
-
+// TODO: Skrive om funksjonene til å være "anonyme" funksjoner for lesbarhet.
 typealias PlasserBestillingWorkflowSetup = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer) -> PlasserBestillingWorkflow
 val plasserBestillingWorkflowSetup: PlasserBestillingWorkflowSetup =
     { sjekkProduktKodeEksisterer, sjekkAdresseEksisterer ->
@@ -26,31 +27,38 @@ val plasserBestillingWorkflowSetup: PlasserBestillingWorkflowSetup =
     }
 
 // Valider Bestilling steg
-typealias ValiderBestilling = (SjekkProduktKodeEksisterer, SjekkAdresseEksisterer, IkkeValidertBestilling) -> Result<ValidertBestilling, Valideringsfeil>
-private val validerBestilling: ValiderBestilling =
-    { sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
-      sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
-      bestilling: IkkeValidertBestilling -> // Input
-        Ok(
+private val validerBestilling =
+    fun(
+        sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
+        sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
+        bestilling: IkkeValidertBestilling // Input
+    ): Result<ValidertBestilling, Nothing> {
+        val ordreId = OrdreId.of(bestilling.ordreId)
+        val leveringsadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.leveringsadresse)
+        val fakturadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.fakturadresse)
+        val ordrelinjer = tilValiderteOrdrelinjer(tilProduktKode(sjekkProduktKodeEksisterer), bestilling.ordrelinjer)
+        val kundeInfo = KundeInfo(KundeId.of(bestilling.kundeinfo))
+
+        return Ok(
             ValidertBestilling(
-                ordreId = OrdreId.of(bestilling.ordreId),
-                fakturaAdresse = "placeholder",
-                kundeId = "placeholder",
-                leveringsadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.leveringsadresse),
-                ordrelinjer = NonEmptyList.fromList(bestilling.ordrelinjer.map {
-                    tilValidertValidertOrdrelinje(
-                        tilProduktKode(
-                            sjekkProduktKodeEksisterer
-                        ), it
-                    )
-                }),
+                ordreId = ordreId,
+                fakturaAdresse = fakturadresse,
+                leveringsadresse = leveringsadresse,
+                kundeInfo = kundeInfo,
+                ordrelinjer = ordrelinjer,
                 sumSomSkalBliBelastet = "Nothing"
             )
         )
     }
 
+private val tilValiderteOrdrelinjer = fun(tilProduktKode: (String) -> Produktkode, ordrelinjer: List<IkkeValidertOrdrelinje>): NonEmptyList<ValidertOrdrelinje> {
+    return NonEmptyList.fromList(ordrelinjer.map {
+        tilValidertValidertOrdrelinje(tilProduktKode, it)
+    })
+}
+
 private val tilValidertValidertOrdrelinje =
-    { tilProduktKode: (String) -> Produktkode, ordrelinje: IkkeValidertBestilling.IkkeValidertOrdrelinje ->
+    { tilProduktKode: (String) -> Produktkode, ordrelinje: IkkeValidertOrdrelinje ->
         ValidertOrdrelinje(
             produktkode = tilProduktKode(ordrelinje.produktkode),
             ordreMengde = OrdreMengde.Enhet(Enhetsmengde(2)),
@@ -71,15 +79,15 @@ private val tilValidertAdresse = { sjekkAdresseEksisterer: SjekkAdresseEksistere
     if (sjekkAdresseEksisterer(adresselinje)) { // Kall den eksterne tjenesten
         ValidertAdresse(adresselinje)
     } else {
-        throw UgyldigOrdreException("Ugyldig adresse")
+        throw UgyldigAdresse("Ugyldig adresse: $adresselinje")
     }
 }
 
 data class ValidertBestilling(
     private val ordreId: OrdreId,
-    private val kundeId: KundeId,
+    private val kundeInfo: KundeInfo,
     private val leveringsadresse: ValidertAdresse,
-    private val fakturaAdresse: FakturaAdresse,
+    private val fakturaAdresse: ValidertAdresse,
     private val ordrelinjer: NonEmptyList<ValidertOrdrelinje>, // TODO Endre tilbake til vanlig list for å få testen til å feile.
     private val sumSomSkalBliBelastet: FakturaSum
 )
@@ -90,6 +98,7 @@ data class ValidertOrdrelinje(
 )
 
 data class ValidertAdresse(val adresselinje: String)
+data class KundeInfo(val kundeId: KundeId) // TODO Vurder å introdusere konseptet med validerte eposter
 
 // Sub-workflows TODO: Plasser der de hører hjemme?
 typealias PrisOrdre = (HentProduktPris) -> (ValidertBestilling) -> PrisetBestilling

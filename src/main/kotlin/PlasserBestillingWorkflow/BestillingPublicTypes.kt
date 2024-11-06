@@ -22,6 +22,7 @@ data class IkkeValidertBestilling(
     val ordreId: String,
     val kundeinfo: String,
     val leveringsadresse: String,
+    val fakturadresse: String,
     val ordrelinjer: List<IkkeValidertOrdrelinje>
 ) {
     data class IkkeValidertOrdrelinje(val produktkode: String, val mengde: Number)
@@ -36,13 +37,12 @@ data class BestillingPlassertHendelser(
 
 // Ting som kan gå galt
 class UgyldigOrdreException(validationMessage: String) : RuntimeException(validationMessage)
+class UgyldigAdresse(validationMessage: String) : RuntimeException(validationMessage)
 typealias Valideringsfeil = String
 
 
 // Todo: Vurdere å flytte
 data class PrisetBestilling(val tmp: String)
-typealias KundeId = Placeholder
-typealias FakturaAdresse = Placeholder
 typealias FakturaSum = Placeholder
 typealias Pris = Placeholder
 typealias Placeholder = String

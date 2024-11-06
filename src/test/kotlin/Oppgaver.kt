@@ -1,4 +1,5 @@
 import PlasserBestillingWorkflow.*
+import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.mapBoth
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
@@ -26,7 +27,7 @@ class Oppgaver {
     @Test
     @DisplayName("OrdreId kan ikke være tom")
     fun ordreIdValideres() {
-        assertThrows<IllegalStateException> {
+        assertThrows<UgyldigOrdreException> {
             plasserBestillingWorkflow(
                 eksempelBestilling.copy(
                     bestilling = eksempelBestilling.bestilling.copy(ordreId = "")
@@ -34,6 +35,27 @@ class Oppgaver {
             )
         }
     }
+
+    @Test
+    @DisplayName("Adresser skal valideres")
+    fun adresserIOrdreValideres() {
+        assertThrows<UgyldigAdresse> {
+            plasserBestillingWorkflow(
+                eksempelBestilling.copy(
+                    bestilling = eksempelBestilling.bestilling.copy(leveringsadresse = "")
+                )
+            )
+        }
+
+        assertThrows<UgyldigAdresse> {
+            plasserBestillingWorkflow(
+                eksempelBestilling.copy(
+                    bestilling = eksempelBestilling.bestilling.copy(fakturadresse = "")
+                )
+            )
+        }
+    }
+
 
     @Test
     @DisplayName("Invariant for enhetsmengde")
@@ -44,7 +66,7 @@ class Oppgaver {
             eksempelBestilling.copy(
                 bestilling = eksempelBestilling.bestilling.copy(
                     ordrelinjer = listOf(
-                        IkkeValidertBestilling.IkkeValidertOrdrelinje(
+                        IkkeValidertOrdrelinje(
                             produktkode = "MagDust",
                             mengde = 10_000
                         )
@@ -67,6 +89,19 @@ class Oppgaver {
     }
 
     @Test
+    // TODO Implementer
+    @DisplayName("Oppgave der man fikser en bug med valider adresse som ikke har privat konstruktør.")
+    fun adresseNonPrivatKonstrtør() {
+        assertThrows<IllegalStateException> {
+            plasserBestillingWorkflow(
+                eksempelBestilling.copy(
+                    bestilling = eksempelBestilling.bestilling.copy(ordrelinjer = emptyList())
+                )
+            )
+        }
+    }
+
+    @Test
     @DisplayName("Validering av produktet faktisk finnes")
     fun oppgave2c() {
         assertThrows<UgyldigOrdreException> {
@@ -74,7 +109,7 @@ class Oppgaver {
                 eksempelBestilling.copy(
                     bestilling = eksempelBestilling.bestilling.copy(
                         ordrelinjer = listOf(
-                            IkkeValidertBestilling.IkkeValidertOrdrelinje(
+                            IkkeValidertOrdrelinje(
                                 produktkode = "Finnes ikke",
                                 mengde = 10_000
                             )
@@ -91,7 +126,8 @@ private val eksempelBestilling = Bestilling(
         ordreId = "1",
         kundeinfo = "Adam Åndra",
         leveringsadresse = "Testveien 5",
-        ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
+        fakturadresse = "Testveien 5",
+        ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
     ),
     time = LocalDateTime.now(),
     userId = "123"
