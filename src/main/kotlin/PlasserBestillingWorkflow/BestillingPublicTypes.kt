@@ -42,7 +42,6 @@ typealias Valideringsfeil = String
 
 
 // Todo: Vurdere å flytte
-data class PrisetBestilling(val tmp: String)
 typealias FakturaSum = Placeholder
 typealias Pris = Placeholder
 typealias Placeholder = String

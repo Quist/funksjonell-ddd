@@ -1,5 +1,7 @@
 package PlasserBestillingWorkflow
 
+import java.nio.ByteOrder
+
 @JvmInline
 value class OrdreId private constructor(val value: String) {
     companion object {
@@ -42,7 +44,7 @@ sealed class Produktkode {
 value class Kilogrammengde private constructor(val value: Float) {
     companion object {
         fun of(value: Float): Kilogrammengde {
-            if (value <=0) {
+            if (value <= 0) {
                 throw IllegalStateException("Kilogrammengde må være positiv")
             }
             return Kilogrammengde(value)
@@ -58,3 +60,10 @@ sealed class OrdreMengde {
     data class Enhet(val mengde: Enhetsmengde) : OrdreMengde()
     data class Kilo(val mengde: Kilogrammengde) : OrdreMengde()
 }
+
+data class PrisetBestilling(
+    val ordreId: OrdreId,
+    val kundeInfo: KundeInfo,
+    val leveringsadresse: ValidertAdresse,
+    val fakturaadresse: ValidertAdresse
+)

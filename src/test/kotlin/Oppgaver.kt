@@ -135,5 +135,4 @@ private val eksempelBestilling = Bestilling(
         ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
     ),
     time = LocalDateTime.now(),
-    userId = "123"
 )

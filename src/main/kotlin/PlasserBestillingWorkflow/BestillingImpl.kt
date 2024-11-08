@@ -4,17 +4,20 @@ import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.*
 import utils.NonEmptyList
 
+val hentProduktPris: (Produktkode) -> Int = { 5 }
+
 // Eksempelimplementasjon av PlasserBestillingWorkflow
 fun initializePlasserBestillingWorkflow(
     sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
     sjekkAdresseEksisterer: SjekkAdresseEksisterer // Dependency
 ): PlasserBestillingWorkflow {
-    return fun(bestilling: Bestilling): Result<BestillingPlassertHendelser, Nothing> {
-        return validerBestilling(
-            sjekkProduktKodeEksisterer,
-            sjekkAdresseEksisterer,
-            bestilling.bestilling
-        ).andThen {
+    return fun(bestilling: Bestilling): Result<BestillingPlassertHendelser, Nothing> = validerBestilling(
+        sjekkProduktKodeEksisterer,
+        sjekkAdresseEksisterer,
+        bestilling.bestilling
+    )
+        .map { prisOrdre(hentProduktPris, it) }
+        .andThen {
             Ok(
                 BestillingPlassertHendelser(
                     bekreftelseSent = true,
@@ -23,7 +26,6 @@ fun initializePlasserBestillingWorkflow(
                 )
             )
         }
-    }
 }
 
 // Valider Bestilling steg
@@ -45,7 +47,6 @@ private fun validerBestilling(
             leveringsadresse = leveringsadresse,
             kundeInfo = kundeInfo,
             ordrelinjer = ordrelinjer,
-            sumSomSkalBliBelastet = "Nothing"
         )
     )
 }
@@ -66,7 +67,6 @@ private fun tilValidertValidertOrdrelinje(
     return ValidertOrdrelinje(
         produktkode = tilProduktKode(ordrelinje.produktkode),
         ordreMengde = OrdreMengde.Enhet(Enhetsmengde(ordrelinje.mengde)),
-        pris = ""
     )
 }
 
@@ -91,22 +91,43 @@ private fun tilValidertAdresse(
 }
 
 data class ValidertBestilling(
-    private val ordreId: OrdreId,
-    private val kundeInfo: KundeInfo,
-    private val leveringsadresse: ValidertAdresse,
-    private val fakturaAdresse: ValidertAdresse,
-    private val ordrelinjer: NonEmptyList<ValidertOrdrelinje>, // TODO Endre tilbake til vanlig list for å få testen til å feile.
-    private val sumSomSkalBliBelastet: FakturaSum
+    val ordreId: OrdreId,
+    val kundeInfo: KundeInfo,
+    val leveringsadresse: ValidertAdresse,
+    val fakturaAdresse: ValidertAdresse,
+    val ordrelinjer: NonEmptyList<ValidertOrdrelinje>, // TODO Endre tilbake til vanlig list for å få testen til å feile.
 )
 
 data class ValidertOrdrelinje(
-    private val produktkode: Produktkode,
-    private val ordreMengde: OrdreMengde,
-    private val pris: Pris
+    val produktkode: Produktkode,
+    val ordreMengde: OrdreMengde,
 )
 
 data class ValidertAdresse(val adresselinje: String)
 data class KundeInfo(val kundeId: KundeId) // TODO Vurder å introdusere konseptet med validerte eposter
+
+// Pris bestilling steg
+private fun prisOrdre(
+    getProduktPris: HentProduktPris,
+    validertBestilling: ValidertBestilling
+): Result<PrisetBestilling, String> {
+    return Ok(
+        PrisetBestilling(
+            ordreId = validertBestilling.ordreId,
+            fakturaadresse = validertBestilling.fakturaAdresse,
+            kundeInfo = validertBestilling.kundeInfo,
+            leveringsadresse = validertBestilling.leveringsadresse
+        )
+    )
+}
+
+private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: ValidertOrdrelinje): Number {
+    val quantity: Int = when (ordrelinje.ordreMengde) { // TODO Consider this structure
+        is OrdreMengde.Enhet -> ordrelinje.ordreMengde.mengde.value.toInt()
+        is OrdreMengde.Kilo -> ordrelinje.ordreMengde.mengde.value.toInt()
+    }
+    return (quantity * getProduktPris(ordrelinje.produktkode));
+}
 
 // Sub-workflows TODO: Plasser der de hører hjemme?
 typealias PrisOrdre = (HentProduktPris) -> (ValidertBestilling) -> PrisetBestilling
@@ -114,4 +135,4 @@ typealias PrisOrdre = (HentProduktPris) -> (ValidertBestilling) -> PrisetBestill
 // Hjelpefunksjoner (typisk services i objekt-orienterte språk)
 typealias SjekkProduktKodeEksisterer = (String) -> Boolean
 typealias SjekkAdresseEksisterer = (String) -> Boolean
-typealias HentProduktPris = () -> Nothing
+typealias HentProduktPris = (produktkode: Produktkode) -> Int
