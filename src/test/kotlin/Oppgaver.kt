@@ -14,8 +14,7 @@ class Oppgaver {
 
     // Initialize plasserBestilling med dependencies og eventuelt test data.
     // Funksjonell måte å gjøre dependency injection på.
-    val plasserBestillingWorkflow: PlasserBestillingWorkflow =
-        plasserBestillingWorkflowSetup(sjekkProduktKodeEksisterer, sjekkAdresseEksisterer)
+    val plasserBestillingWorkflow: PlasserBestillingWorkflow = initializePlasserBestillingWorkflow(::sjekkProduktKodeEksisterer, ::sjekkAdresseEksisterer)
 
     @Test
     @Ignore
