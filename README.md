@@ -29,9 +29,10 @@ flowchart LR
     Pris[Pris bestilling]
     Bekreft[Bekreft bestilling]
     OnFailure([Ved feil: Feilliste])
-    Sideeffekter["`Sideffekter:
-    Send bestilling
-    Bekreftelse`"]
+    Sideeffekter["`Sideffekter til andre Bounded Contexts:
+    - Bestilling bekreftet til kunde
+    - Bestilling sendt til fraktavdelingen
+    - Bestilling sendt til fakturaavdeling`"]
     OnSuccess["`Suksess:
     Bestillingsbekreftelse sendt
     Bestilling plassert

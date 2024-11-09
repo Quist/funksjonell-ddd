@@ -6,21 +6,18 @@ import java.time.LocalDateTime
 
 
 // ==================================
-// Denne filen inneholder definisjonene av OFFENTLIGE typer (eksponert ved grensen av denne Bounded Context)
-// relatert til PlasserBestilling
+// Denne filen inneholder definisjonene av offentlige typer (eksponert ved grensen av denne Bounded Context) relatert til PlasserBestilling
 // ==================================
 
-// ------------------------------------
-
-
 // Hovedworkflow
-typealias PlasserBestillingWorkflow = (Bestilling) -> Result<BestillingPlassertHendelser, Valideringsfeil>
+typealias PlasserBestillingWorkflow = (Bestilling) -> Result<PlasserBestillingHendelser, Valideringsfeil>
 
 // Input
 data class Bestilling(val bestilling: IkkeValidertBestilling, val time: LocalDateTime)
 data class IkkeValidertBestilling(
     val ordreId: String,
-    val kundeinfo: String,
+    val kundeId: String,
+    val kundeEpost: String,
     val leveringsadresse: String,
     val fakturadresse: String,
     val ordrelinjer: List<IkkeValidertOrdrelinje>
@@ -29,18 +26,28 @@ data class IkkeValidertBestilling(
 }
 
 // Output
-data class BestillingPlassertHendelser(
-    val bekreftelseSent: Boolean,
-    val ordrePlassert: Boolean,
-    val fakturerbarOrdrePlassert: Boolean
+data class PlasserBestillingHendelser(
+    val bekreftelseSent: SendEpostResultat,
+    val ordrePlassert: PrisetBestilling, // Blir sendt til fraktavdelingen
+    val fakturerbarOrdrePlassert: FakturerbarOrdrePlassert? // Blir sendt til fakturaavdelingen kun hvis det sum >
 )
+data class FakturerbarOrdrePlassert(val ordreId: OrdreId, val fakturadresse: ValidertAdresse, val fakturasum: Pris)
 
 // Ting som kan gå galt
 class UgyldigOrdreException(validationMessage: String) : RuntimeException(validationMessage)
 class UgyldigAdresse(validationMessage: String) : RuntimeException(validationMessage)
 typealias Valideringsfeil = String
 
+// Dependencies
+typealias SjekkProduktKodeEksisterer = (String) -> Boolean
+typealias SjekkAdresseEksisterer = (String) -> Boolean
+typealias HentProduktPris = (produktkode: Produktkode) -> Int
+typealias LagBekreftelsesEpostHtml = (PrisetBestilling) -> HtmlString
+typealias SendBekreftelsesEpost = (email: String, letter: HtmlString) -> SendEpostResultat
 
-// Todo: Vurdere å flytte
-typealias FakturaSum = Placeholder
-typealias Placeholder = String
+// Typer for dependencies
+enum class SendEpostResultat {
+    Sendt,
+    Ikke_sendt
+}
+typealias HtmlString = String

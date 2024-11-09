@@ -5,28 +5,29 @@ import com.github.michaelbull.result.*
 import utils.NonEmptyList
 
 
-// Eksempelimplementasjon av PlasserBestillingWorkflow
+// ==================================
+// Implementasjon av PlasserBestillingWorkflow
+// ==================================
 fun initializePlasserBestillingWorkflow(
-    sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
-    sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
-    hentProduktPris: HentProduktPris // Dependency
+    sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer,     // Dependency
+    sjekkAdresseEksisterer: SjekkAdresseEksisterer,             // Dependency
+    hentProduktPris: HentProduktPris,                           // Dependency
+    lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,         // Dependency
+    sendBekreftelsesEpost: SendBekreftelsesEpost                // Dependency
 ): PlasserBestillingWorkflow {
-    return fun(bestilling: Bestilling): Result<BestillingPlassertHendelser, Nothing> {
+    return fun(bestilling: Bestilling): Result<PlasserBestillingHendelser, Valideringsfeil> {
         return validerBestilling(
             sjekkProduktKodeEksisterer, sjekkAdresseEksisterer, bestilling.bestilling
         )
-            .map { prisOrdre(hentProduktPris, it) }
-            .andThen {
-                Ok(
-                    BestillingPlassertHendelser(
-                        bekreftelseSent = true, ordrePlassert = true, fakturerbarOrdrePlassert = true
-                    )
-                )
-            }
+            .andThen { prisOrdre(hentProduktPris, it) }
+            .map { bekreftBestilling(lagBekreftelsesEpostHtml, sendBekreftelsesEpost, it) }
+            .flatMap { pair -> Ok(lagHendelser(pair.second, pair.first)) }
     }
 }
 
-// Valider Bestilling steg
+// ==================================
+// Valider bestilling steg
+// ==================================
 private fun validerBestilling(
     sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
     sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
@@ -36,7 +37,10 @@ private fun validerBestilling(
     val leveringsadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.leveringsadresse)
     val fakturadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.fakturadresse)
     val ordrelinjer = tilValiderteOrdrelinjer(tilProduktKode(sjekkProduktKodeEksisterer), bestilling.ordrelinjer)
-    val kundeInfo = KundeInfo(KundeId.of(bestilling.kundeinfo))
+    val kundeInfo = KundeInfo(
+        kundeId = KundeId.of(bestilling.kundeId),
+        kundeEpost = bestilling.kundeEpost
+    )
 
     return Ok(
         ValidertBestilling(
@@ -100,9 +104,11 @@ data class ValidertOrdrelinje(
 )
 
 data class ValidertAdresse(val adresselinje: String)
-data class KundeInfo(val kundeId: KundeId) // TODO Vurder å introdusere konseptet med validerte eposter
+data class KundeInfo(val kundeId: KundeId, val kundeEpost: String) // TODO Vurder å introdusere konseptet med validerte eposter
 
+// ==================================
 // Pris bestilling steg
+// ==================================
 private fun prisOrdre(
     getProduktPris: HentProduktPris, validertBestilling: ValidertBestilling
 ): Result<PrisetBestilling, String> {
@@ -128,10 +134,30 @@ private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: Validert
     return (quantity * getProduktPris(ordrelinje.produktkode));
 }
 
-// Sub-workflows TODO: Plasser der de hører hjemme?
-typealias PrisOrdre = (HentProduktPris) -> (ValidertBestilling) -> PrisetBestilling
+// ==================================
+// Bekreft bestilling steg
+// ==================================
+private fun bekreftBestilling(
+    lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,  // Dependency
+    sendBekreftelsesEpost: SendBekreftelsesEpost,        // Dependency
+    prisetBestilling: PrisetBestilling                   // Input
+): Pair<SendEpostResultat, PrisetBestilling> {
+    lagBekreftelsesEpostHtml(prisetBestilling).let { letter ->
+        return Pair(sendBekreftelsesEpost(prisetBestilling.kundeInfo.kundeEpost, letter), prisetBestilling)
+    }
+}
 
-// Hjelpefunksjoner (typisk services i objekt-orienterte språk)
-typealias SjekkProduktKodeEksisterer = (String) -> Boolean
-typealias SjekkAdresseEksisterer = (String) -> Boolean
-typealias HentProduktPris = (produktkode: Produktkode) -> Int
+// ==================================
+// Lag hendelser
+// ==================================
+private fun lagHendelser(prisetBestilling: PrisetBestilling, sendEpostResultat: SendEpostResultat): PlasserBestillingHendelser {
+    return PlasserBestillingHendelser(
+        bekreftelseSent = sendEpostResultat, ordrePlassert = prisetBestilling, fakturerbarOrdrePlassert = lagFakturerBarHendelse(prisetBestilling)
+    )
+}
+
+private fun lagFakturerBarHendelse(prisetBestilling: PrisetBestilling): FakturerbarOrdrePlassert? {
+    return if (prisetBestilling.faktureringssum.value.toDouble() > 0) {
+        FakturerbarOrdrePlassert(ordreId = prisetBestilling.ordreId, fakturadresse = prisetBestilling.fakturaadresse, fakturasum = prisetBestilling.faktureringssum)
+    } else null
+}

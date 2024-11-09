@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import kotlin.test.Ignore
+import kotlin.test.assertEquals
 import kotlin.test.junit5.JUnit5Asserter.fail
 
 class Oppgaver {
@@ -17,7 +18,9 @@ class Oppgaver {
     val plasserBestillingWorkflow: PlasserBestillingWorkflow = initializePlasserBestillingWorkflow(
         ::sjekkProduktKodeEksisterer,
         ::sjekkAdresseEksisterer,
-        ::hentProduktPris
+        ::hentProduktPris,
+        ::lagBekreftelsesEpostHtml,
+        ::sendBekreftelsesEpost
     )
 
     @Test
@@ -133,7 +136,7 @@ class Oppgaver {
         fun ordrePrises() {
             val result = plasserBestillingWorkflow(eksempelBestilling)
             result.mapBoth(
-                success = { value -> assertTrue(true) },
+                success = { value -> assertEquals(50_000, value.fakturerbarOrdrePlassert?.fakturasum?.value) },
                 failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
             )
         }
@@ -144,7 +147,8 @@ class Oppgaver {
 private val eksempelBestilling = Bestilling(
     bestilling = IkkeValidertBestilling(
         ordreId = "1",
-        kundeinfo = "Adam Åndra",
+        kundeId = "Adam Åndra",
+        kundeEpost = "test@testesen.com",
         leveringsadresse = "Testveien 5",
         fakturadresse = "Testveien 5",
         ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
