@@ -1,7 +1,5 @@
 package PlasserBestillingWorkflow
 
-import java.nio.ByteOrder
-
 @JvmInline
 value class OrdreId private constructor(val value: String) {
     companion object {
@@ -38,6 +36,18 @@ sealed class Produktkode {
     data class Tskjorte(val kode: TskjorteKode) : Produktkode()
 }
 
+@JvmInline
+value class Pris private constructor(val value: Number) {
+    companion object {
+        fun of(value: Number): Pris {
+            if (value.toDouble() <= 0) {
+                throw UgyldigOrdreException("Pris må være større en 0")
+            }
+            return Pris(value)
+        }
+    }
+}
+
 // Ordremengde typer
 
 @JvmInline
@@ -65,5 +75,6 @@ data class PrisetBestilling(
     val ordreId: OrdreId,
     val kundeInfo: KundeInfo,
     val leveringsadresse: ValidertAdresse,
-    val fakturaadresse: ValidertAdresse
+    val fakturaadresse: ValidertAdresse,
+    val faktureringssum: Pris
 )

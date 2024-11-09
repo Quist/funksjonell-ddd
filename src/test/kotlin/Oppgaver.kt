@@ -14,7 +14,11 @@ class Oppgaver {
 
     // Initialize plasserBestilling med dependencies og eventuelt test data.
     // Funksjonell måte å gjøre dependency injection på.
-    val plasserBestillingWorkflow: PlasserBestillingWorkflow = initializePlasserBestillingWorkflow(::sjekkProduktKodeEksisterer, ::sjekkAdresseEksisterer)
+    val plasserBestillingWorkflow: PlasserBestillingWorkflow = initializePlasserBestillingWorkflow(
+        ::sjekkProduktKodeEksisterer,
+        ::sjekkAdresseEksisterer,
+        ::hentProduktPris
+    )
 
     @Test
     @Ignore
@@ -123,6 +127,17 @@ class Oppgaver {
                 )
             }
         }
+
+        @Test
+        @DisplayName("Ordren skal prises")
+        fun ordrePrises() {
+            val result = plasserBestillingWorkflow(eksempelBestilling)
+            result.mapBoth(
+                success = { value -> assertTrue(true) },
+                failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
+            )
+        }
+
     }
 }
 

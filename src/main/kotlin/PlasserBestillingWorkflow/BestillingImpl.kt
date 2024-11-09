@@ -4,28 +4,26 @@ import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.*
 import utils.NonEmptyList
 
-val hentProduktPris: (Produktkode) -> Int = { 5 }
 
 // Eksempelimplementasjon av PlasserBestillingWorkflow
 fun initializePlasserBestillingWorkflow(
     sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
-    sjekkAdresseEksisterer: SjekkAdresseEksisterer // Dependency
+    sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
+    hentProduktPris: HentProduktPris // Dependency
 ): PlasserBestillingWorkflow {
-    return fun(bestilling: Bestilling): Result<BestillingPlassertHendelser, Nothing> = validerBestilling(
-        sjekkProduktKodeEksisterer,
-        sjekkAdresseEksisterer,
-        bestilling.bestilling
-    )
-        .map { prisOrdre(hentProduktPris, it) }
-        .andThen {
-            Ok(
-                BestillingPlassertHendelser(
-                    bekreftelseSent = true,
-                    ordrePlassert = true,
-                    fakturerbarOrdrePlassert = true
+    return fun(bestilling: Bestilling): Result<BestillingPlassertHendelser, Nothing> {
+        return validerBestilling(
+            sjekkProduktKodeEksisterer, sjekkAdresseEksisterer, bestilling.bestilling
+        )
+            .map { prisOrdre(hentProduktPris, it) }
+            .andThen {
+                Ok(
+                    BestillingPlassertHendelser(
+                        bekreftelseSent = true, ordrePlassert = true, fakturerbarOrdrePlassert = true
+                    )
                 )
-            )
-        }
+            }
+    }
 }
 
 // Valider Bestilling steg
@@ -52,8 +50,7 @@ private fun validerBestilling(
 }
 
 private fun tilValiderteOrdrelinjer(
-    tilProduktKode: (String) -> Produktkode,
-    ordrelinjer: List<IkkeValidertOrdrelinje>
+    tilProduktKode: (String) -> Produktkode, ordrelinjer: List<IkkeValidertOrdrelinje>
 ): NonEmptyList<ValidertOrdrelinje> {
     return NonEmptyList.fromList(ordrelinjer.map {
         tilValidertValidertOrdrelinje(tilProduktKode, it)
@@ -80,8 +77,7 @@ private fun tilProduktKode(sjekkProduktKodeEksisterer: SjekkProduktKodeEksistere
 }
 
 private fun tilValidertAdresse(
-    sjekkAdresseEksisterer: SjekkAdresseEksisterer,
-    adresselinje: String
+    sjekkAdresseEksisterer: SjekkAdresseEksisterer, adresselinje: String
 ): ValidertAdresse {
     return if (sjekkAdresseEksisterer(adresselinje)) { // Kall eksterne tjeneste
         ValidertAdresse(adresselinje)
@@ -108,15 +104,18 @@ data class KundeInfo(val kundeId: KundeId) // TODO Vurder å introdusere konsept
 
 // Pris bestilling steg
 private fun prisOrdre(
-    getProduktPris: HentProduktPris,
-    validertBestilling: ValidertBestilling
+    getProduktPris: HentProduktPris, validertBestilling: ValidertBestilling
 ): Result<PrisetBestilling, String> {
+    val faktureringssum =
+        validertBestilling.ordrelinjer.items.map { prisOrdreLinje(getProduktPris, it) }.sumOf { it.toDouble() }
+            .let { Pris.of(it) }
     return Ok(
         PrisetBestilling(
             ordreId = validertBestilling.ordreId,
             fakturaadresse = validertBestilling.fakturaAdresse,
             kundeInfo = validertBestilling.kundeInfo,
-            leveringsadresse = validertBestilling.leveringsadresse
+            leveringsadresse = validertBestilling.leveringsadresse,
+            faktureringssum = faktureringssum
         )
     )
 }

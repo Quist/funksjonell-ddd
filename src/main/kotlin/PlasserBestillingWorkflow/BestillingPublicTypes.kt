@@ -43,5 +43,4 @@ typealias Valideringsfeil = String
 
 // Todo: Vurdere å flytte
 typealias FakturaSum = Placeholder
-typealias Pris = Placeholder
 typealias Placeholder = String

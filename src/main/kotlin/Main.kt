@@ -1,12 +1,9 @@
-import PlasserBestillingWorkflow.Bestilling
-import PlasserBestillingWorkflow.IkkeValidertBestilling
-import PlasserBestillingWorkflow.PlasserBestillingWorkflow
-import PlasserBestillingWorkflow.initializePlasserBestillingWorkflow
+import PlasserBestillingWorkflow.*
 import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
     val plasserBestillingWorkflow: PlasserBestillingWorkflow =
-        initializePlasserBestillingWorkflow(::sjekkProduktKodeEksisterer, ::sjekkAdresseEksisterer)
+        initializePlasserBestillingWorkflow(::sjekkProduktKodeEksisterer, ::sjekkAdresseEksisterer, ::hentProduktPris)
     plasserBestillingWorkflow(
         Bestilling(
             IkkeValidertBestilling(
@@ -30,4 +27,8 @@ fun sjekkProduktKodeEksisterer(produktKode: String): Boolean {
 
 fun sjekkAdresseEksisterer(adresse: String): Boolean {
     return adresse.isNotEmpty()
+}
+
+fun hentProduktPris(produktKode: Produktkode): Int {
+    return 5;
 }
