@@ -11,7 +11,6 @@ import java.time.LocalDateTime
 
 // Hovedworkflow
 typealias PlasserBestillingWorkflow = (Bestilling) -> Result<PlasserBestillingHendelser, Valideringsfeil>
-
 // Input
 data class Bestilling(val bestilling: IkkeValidertBestilling, val time: LocalDateTime)
 data class IkkeValidertBestilling(
