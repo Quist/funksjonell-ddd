@@ -150,18 +150,39 @@ Målet er å reflektere over hvordan endringer påvirker både domenemodellen og
 
 Det finnes ingen fasit her – det er opp til deg hvordan du velger å løse oppgavene, og poenget er å lære gjennom å eksperimentere og reflektere.Vi ser på 4 forskjellige typer endringer:
 
-#### Oppgave X_1 Legge til fraktkostnader
-En sen søndagskveld legger du i vei til et lokalt klatresenter i Oslo. Når du kommer kommer inn får du øye på en kar i bar overkropp som filmer seg selv. Akkurat i det du innser at det er Magnus, så roper han på deg:
+#### Oppgave Legge til fraktkostnader
 Det viser seg at det er store problemer med inntjeningen på nettsalget. Magnus sier at han helt har glemt å tenke på at det koster penger for frakt!
 
-a: Legg til et steg for å legge til fraktkostader, f.eks etter prisOrdre-steget.
-b: Inkluderer fraktkostnaden i bekreftelseseposten.
+* **Legg til et steg for å legge til fraktkostader, f.eks etter prisOrdre-steget.**
+* **Inkluderer fraktkostnaden i bekreftelseseposten.**
 
-#### Oppgave X_2 Legge til støtte for VIP-kunder
+> [!Note] 
+> Å definere det som et selvstendig steg kan være nyttig for å tydeligjøre hva som skjer i foretningsprosessen. 
 
-#### Oppgave X_3 Legge til støtte for promokoder
+#### Oppgave Legge til støtte for VIP-kunder
+Magnus vil gjerne at alle klatrevenne hans skal få gratisk frakt. Han vil gjerne kalle det VIP-kunder, og tenker at det kan komme flere fordeler etterhvert.
 
-#### Oppgave X_4 Implementere søndagsstengt
+* Endre på `KundeInfo` i `ValidertBestilling` til å representere VIP-kunder
+* Legg til et steg, eller endre et steg, for å implementere dette.
+
+
+#### Oppgave Legge til støtte for promokoder
+Etter en diskusjon med salgsteamet til Magnus kommer dere opp med følgende krav:
+
+* Når man legger inn en bestilling, _kan_ kunden sende inn en promokode.
+* Hvis koden er tilstede, så vil noen produkter gi andre priser.
+* Bestillingen bør vise at en promokode var brukt.
+
+> [!TIP]
+> Tilsynelatede uskylding, vil den siste kravet påvirke store deler av domenet vårt. Lykke til!
+
+#### Oppgave Implementere søndagsstengt
+Magnus jobber ikke søndager når det er godt klatrevær.
+
+**Implementer at systemet er helt søndagssteng**
+
+> [!Tips]
+> Adapter function
 
 ### 🌟 Bonusoppgaver
 
