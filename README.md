@@ -73,34 +73,37 @@ Last ned IntelliJ IDEA hvis du ikke allerede har det installert.
 Det er skrevet JUnit tester for flere av oppgavene. Det kan være et lurt sted å starte for å få oversikt over oppgaven og validere løsningen. Se `Oppgaver.kt`
 
 ### Del 1 - Validering
+> [!NOTE]
 > I DDD handler mye av designet om å beskytte domenet og sørge for at det forretningslogiske laget forblir konsistent og robust. Validering av input hjelper med å forhindre at ugyldige eller uventede data når inn til kjerneobjektene og ødelegger forretningslogikken.
 
 #### Oppgave 1a
 Magnus spør om du vil være med å klatre. I det du sikrer Magnus og han er på vei opp i veggen, forteller han at han har fått en noen sinte eposter fra fraktavdelingen. De mottar masse bestillinger med ugyldige gateadresser.
 
-* Endre `ValidertAdresse`-typen slik at konstruktøren blir privat. Legg til en companion object med en create-metode som sørger for at gateadressefeltet ikke et tomt.
+* **Endre `ValidertAdresse`-typen slik at konstruktøren blir privat. Legg til en companion object med en create-metode som sørger for at gateadressefeltet ikke et tomt.**
 
 #### Oppgave 1b
 I det Magnus klipper seg inn i første klipp, tar han opp et problem rundt postnummer. For Magnus og alle andre i firmaet er det ganske "selvsagt" at norske postnummer er tallverdier mellom 0001 og 9999. 
 
 "Ahh",- tenker du inne i deg. Hvis det er sånn de snakker om det, så bør vi nok også modelere det sånn.
 
-* Innfør en ny type, `Postnummer`. Endre feltet postnummer i `ValidertAdresse` til å være av denne typen. `Postnummer` skal ha som invariant at postnummer er et tall mellom 0001 og 9999. Du kan kaste en `ugyldigAdresse`-exception om det ikke er det.
+* **Innfør en ny type, `Postnummer`. Endre feltet postnummer i `ValidertAdresse` til å være av denne typen. `Postnummer` skal ha som invariant at postnummer er et tall mellom 0001 og 9999. Du kan kaste en `ugyldigAdresse`-exception om det ikke er det.**
 
 #### Oppgave 1c 
 Magnus forsetter å prate mens han klatrer oppover. Han forteller om at selv om det formelt sett er gyldige adresser som sendes inn, så hender det at adressen rett og slett ikke finnes!
 Du feilsøker litt og ser fort at et teammedlemm fra et konkurrende konsulentselskap har lagt igjen en TODO i `tilValidertAdresse`funksjonen.
 
-* Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`.
+* **Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`.**
 
+> [!NOTE]
 > Vi lar være her, men her kunne vi også valgt å innføre en ny type for å både reflektere en gyldig og eksisterende adresse:
 > ```data class ValidertOgEksisterendeNorskAdresse ..```
 
 #### Oppgave 2a
 Etter å ha toppet ut ruta, firer Magnus seg ned mot bakken. På vei ned forteller han om et annet problem de har hatt: ugyldige eposter som blir sendt inn i systemet.
 
-* Implementer en validering av epost som validerer at det ihvertfall er en alfakrøll i eposten.
+* **Implementer en validering av epost som validerer at det ihvertfall er en alfakrøll i eposten.**
 
+> [!TIP]
 > Du kan løse dette på flere måter. Ett eksempel er ved å innføre en egen e-post data class.
 
 
@@ -126,18 +129,22 @@ data class ValidertBestilling(..., val epost: EpostStatus)
 #### Oppgave 3a
 Den høylytte klatreren kommer bort. Det viser seg at han heter Adam Ondra og er endel av virksomheten til Magnus. Adam forteller om enda et problem. Det kommer mange bestillinger inn i systemet som ikke har noen ordrelinjer! Da blir det bare støy for faktura- og regnskapsavdelingen.
 
-Implementer en endring i domenetypene slik at listen aldri kan være tom.
+**Implementer en endring i domenetypene slik at listen aldri kan være tom.**
 > [!TIP]
 > Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`.
 > 
 > Konstruktøren i NonEmptyList returnerer et Result. Sjekk resultatet. Du kan kaste en `UgyldigeOrdreLinjer`-exception om listen var tom.
 
 ### Del 2 Pris Bestilling
-TODO Oppgaver relatert til å prise bestillingen. Tema? Kanskje noe med agegratrot. Eller noen enklere oppgaver bare for å bli kjent med steget.
+TODO Oppgaver relatert til å prise bestillingen. Tema? Kanskje noe med agregat. Eller noen enklere oppgaver bare for å bli kjent med steget.
 
 ### Del 3 Bekreft bestilling steg
+TODO Oppgave med å legge til epost i bekreftelesepost
 
-#### 💰Del 4 -Videreutvikle designet 
+### Del 4 Outputten av funksjonen – Events med sideeffekter
+TODO Oppgaver. Kanskje noe med å skrive/fylle ut tester på den faktiske outputten av funksjonen.
+
+### 💰Del 5 -Videreutvikle designet 
 I denne delen av workshoppen jobber vi videre med endringer i kravene fra Magnus.
 Målet er å reflektere over hvordan endringer påvirker både domenemodellen og koden, og å se hvordan en domene-drevet tilnærming kan håndtere slike justeringer.
 
