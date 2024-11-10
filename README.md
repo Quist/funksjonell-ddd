@@ -132,8 +132,6 @@ Implementer en endring i domenetypene slik at listen aldri kan være tom.
 > 
 > Konstruktøren i NonEmptyList returnerer et Result. Sjekk resultatet. Du kan kaste en `UgyldigeOrdreLinjer`-exception om listen var tom.
 
-
-
 ### Del 2 Priset bestilling
 
 ### Del 3 Events
