@@ -6,14 +6,17 @@ Workshop for faggruppen *Arkitektur i Praksis*. Etter å ha deltatt i denne work
 * Fått prøve å kode på en måte som er både funksjonell og domene-drevet.
 
 ## 💡 Introduksjon
-Vi har fått et spennende oppdrag fra ingen ringere enn Magnus Midtpø. Magnus har nemlig besluttet å åpne en nettbutikk som skal selge klatreutstyr og T-skjorter – alt designet for å inspirere til å klatre høyere og sikrere!
+Vi har fått et spennende oppdrag fra ingen ringere enn Magnus Midtbø. Magnus har nemlig besluttet å åpne en nettbutikk som skal selge klatreutstyr og T-skjorter – alt designet for å inspirere til å klatre høyere og sikrere!
 
-Etter å ha kjørt en Event Storming sammen med Magnus har dere funnet ut av:
+Etter å ha hørt noe snakk om Domene dreven design og viktigigheten av et produktteam, samler du sammen Magnus og gjengen og kjører en Event Storming.
+Der kommer dere fram til en avgrenset kontekst (Bounded Context) som Magnus gjerne vil at du tar ansvar for. 
+Spesifikt er dette Bestillingskonteksten som har ansvar for å ta imot en  bestilling og behandle denne. Dette blir dere enige om å kalle `PlasserBestillingWorkflow`. Magnus forteller at den består av følgende steg:
 
-* Ikke validerte bestillinger blir sendt inn via Youtube kommentarer på videoene til Magnus.
-* Alle bestillinger må valideres før de behandles.
-* Når en bestilling er validert skal den prissettes.
-* Deretter skal den sendes til fraktavdelingen, faktura skal sendes til fakturaavdelingen og kunden skal få en bekreftelse.
+1. Ikke validerte bestillinger blir mottatt via Youtube-kommentarer på videoene til Magnus. Problemet er at kommentarene ofte inneholder mangelende eller feil data. Alle bestillinger må derfor nøye valideres.
+2. Deretter skal bestillinges prises. Alle ordrelinjer skal prises og totalen skal beregnes. Selve prisingen ligger i et egen system (en annen Bounded Context), og vi kan bruke en ekstern tjeneste for å hente dette.-
+3. Deretter skal bestillingen bekreftes per epost til brukeren, bestillingen skal sendes til frakavdelingen og fakturaavdelingen skal motta prisinformasjon.
+
+"Topp!", - tenker du. Dette kan jeg jo modelere som en kontiunerlig workflow uten sideeffekter!  
 
 ```mermaid
 ---
@@ -44,18 +47,27 @@ flowchart LR
     Bekreft --> OnFailure
 ```
 
-### Ressurser
-Lenke til Result-biblioteket, andre relevante lenker.
+## 📚 Ressurser
+Workshoppen og oppgaven er inspirert av boken [Domain Modelling Made Functional](https://github.com/swlaschin/DomainModelingMadeFunctional). Deler av oppgaven er portet fra F# til Kotlin.
+
+Deler av kodebase bruker Result-typen fra `kotlin-result`. Dokumentasjonen finnes [her](https://github.com/michaelbull/kotlin-result).
 
 ## 👩‍💻 Oppgaver
 
 ### Kom i gang
-Bruk gjerne intelliJ.
-Klon osv.
+For å komme i gang med oppgaven, følg disse trinnene:
 
-2. Modelere simple typer
-2. Modelere workflows som funksjoner
+1. Klon ned kodebasen fra GitHub ved å kjøre følgende kommando i terminalen:
+```bash
+git clone https://github.com/Quist/funksjonell-ddd.git
+```
 
+2. Åpne prosjektet i IntelliJ
+IntelliJ IDEA er en anbefalt editor for å jobbe med Kotlin og Gradle-prosjekter.
+Last ned IntelliJ IDEA hvis du ikke allerede har det installert.
+Åpne IntelliJ, og importer prosjektet som et eksisterende Gradle-prosjekt.
+
+3. Du finner oppgavene lenger ned her. Lykke til!
 
 ### Oppgaver 📋
 Magnus Midtpø kjenner ikke til Integers og Strings. Vi har derfor modellert ordreId som en egen type.
