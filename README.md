@@ -52,9 +52,8 @@ Workshoppen og oppgaven er inspirert av boken [Domain Modelling Made Functional]
 
 Deler av kodebase bruker Result-typen fra `kotlin-result`. Dokumentasjonen finnes [her](https://github.com/michaelbull/kotlin-result).
 
-## 👩‍💻 Oppgaver
 
-### Kom i gang
+## Kom i gang
 For å komme i gang med oppgaven, følg disse trinnene:
 
 1. Klon ned kodebasen fra GitHub ved å kjøre følgende kommando i terminalen:
@@ -69,7 +68,7 @@ Last ned IntelliJ IDEA hvis du ikke allerede har det installert.
 
 3. Du finner oppgavene lenger ned her. Lykke til!
 
-## 📋 Oppgaver 
+## 👩‍💻 Oppgaver
 Det er skrevet JUnit tester for flere av oppgavene. Det kan være et lurt sted å starte for å få oversikt over oppgaven og validere løsningen. Se `Oppgaver.kt`
 
 ### Del 1 - Validering
