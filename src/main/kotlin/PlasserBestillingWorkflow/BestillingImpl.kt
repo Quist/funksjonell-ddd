@@ -89,11 +89,8 @@ private fun tilValidertAdresse(
         throw UgyldigAdresse("Gateadresse eller postnummer er null eller tom: $adresse")
     }
 
-    return if (sjekkAdresseEksisterer(adresse)) { // Kall ekstern tjeneste
-        ValidertAdresse(adresse.gateadresse, adresse.postnummer.toInt())
-    } else {
-        throw UgyldigAdresse("Ugyldig adresse: $adresse")
-    }
+    // TODO Oppgave 1c: Husk å faktisk sjekk om adressen finnes!
+    return ValidertAdresse(adresse.gateadresse, adresse.postnummer.toInt())
 }
 
 data class ValidertBestilling(

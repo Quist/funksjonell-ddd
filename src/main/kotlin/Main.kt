@@ -29,7 +29,17 @@ fun sjekkProduktKodeEksisterer(produktKode: String): Boolean {
 }
 
 fun sjekkAdresseEksisterer(adresse: IkkeValidertBestilling.IkkeValidertAdresse): Boolean {
-    return !adresse.postnummer.isNullOrBlank() || !adresse.gateadresse.isNullOrBlank()
+    val eksisterendeAdresser = listOf(
+        "Karl Johans gate" to "1234",
+        "Bryggen" to "5678",
+        "Olav Tryggvasons gate" to "9012",
+        "Hillevågsveien" to "3456",
+        "Storgata" to "7890"
+    )
+    if (adresse.postnummer.isNullOrBlank() || adresse.gateadresse.isNullOrBlank()) {
+        return false
+    }
+    return eksisterendeAdresser.contains(adresse.gateadresse to adresse.postnummer)
 }
 
 fun hentProduktPris(produktKode: Produktkode): Int {

@@ -87,30 +87,28 @@ I det Magnus klipper seg inn i første klipp, tar han opp et problem rundt postn
 
 * Innfør en ny type, `Postnummer`. Endre feltet postnummer i `ValidertAdresse` til å være av denne typen. `Postnummer` skal ha som invariant at postnummer er et tall mellom 0001 og 9999. Du kan kaste en `ugyldigAdresse`-exception om det ikke er det.
 
-##### 1a Definere en enkel value type
-Kjør enhetstesten. Den feiler fordi KundeId ikke er definert som en type. Definer den
+#### Oppgave 1c 
+Magnus forsetter å prate med han klatrer oppover. Han forteller om at selv om det formelt sett er gyldige adresser som sendes inn, så hender det at adressen rett og slett ikke finnes!
+Du feilsøker litt og ser fort at TeamMedlem fra et konkurrende konsulentselskap har lagt igjen en TODO i `tilValidertAdresse`funksjonen.
 
-##### 1b Forretningsprosesser modelert som workflows
-Implementer/endre på en av de første workflowen.
+* Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`
 
-##### Oppgave 2 - Integritet og konsistens i Domenet
-> Målet er å lage en avgrenset kontekst (bounded context) der all data inne i domenet er gyldig og konsistent, til forskjell fra dataen fra den skumle utenfor verden.
+> Vi lar være her, men her kunne vi også valgt å innføre en ny type for å både reflektere en gyldig og eksisterende adresse:
+> ```data class ValidertOgEksisterendeNorskAdresse ..```
 
-> Hvis vi kan være sikker på at all data er gyldig i vår kontekst, kan implementasjonen være mye renere og vi kan unngå defansiv koding.
+#### Oppgave 2
+TODO: Kundeinfo og validert epost
 
-##### Oppgave 2a - Integritet 
-Magnus har nevnt at enhetsmengde alltid skal være mellom 1 og 1000. Implementer en integritetssjekk som gjør det umulig at en ordre kan inneholde mer enn 1000 enheter. 
-
-##### Oppgave 2b - Konsistens
-Alle validerteBestillinger må ha minst en ordrelinje. Hvordan kan vi modellere domenet for å sørge for dette? Prøv å løs dette ved å endre på modellen (og konstruktører).
-
+#### Oppgave 3
+TODO: Noe med ordrelinjer
 > Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`
+> 
 
-##### Oppgave 2x Implementere forretningsregler ved å bruke typesystemet.
-TODO: Vurdere oppgave med hvordan modellere uverifiserte og verifiserte adresser. 
+### Del 2 Priset bestilling
 
+### Del 3 Events
 
-#### 💰Oppgave X -Videreutvikle designet 
+#### 💰Del 4 -Videreutvikle designet 
 I denne delen av workshoppen jobber vi videre med endringer i kravene fra Magnus.
 Målet er å reflektere over hvordan endringer påvirker både domenemodellen og koden, og å se hvordan en domene-drevet tilnærming kan håndtere slike justeringer.
 

@@ -44,6 +44,17 @@ class Oppgaver {
             )
             assertThrows<UgyldigAdresse> { plasserBestillingWorkflow(bestilling) }
         }
+
+        @Test
+        @DisplayName("Oppgave 1c: Gjør det umulig å sende inn en ukjent adresse")
+        fun oppgave1c() {
+            val bestilling = eksempelGyldigBestilling.copy(
+                bestilling = eksempelGyldigBestilling.bestilling.copy(
+                    leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Ukjent Adresse", "5211")
+                )
+            )
+            assertThrows<UkjentAdresse> { plasserBestillingWorkflow(bestilling) }
+        }
     }
 
     @Test

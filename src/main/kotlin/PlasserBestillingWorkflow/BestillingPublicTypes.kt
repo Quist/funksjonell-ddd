@@ -36,6 +36,7 @@ data class FakturerbarOrdrePlassert(val ordreId: OrdreId, val fakturadresse: Val
 // Ting som kan gå galt
 class UgyldigOrdreException(validationMessage: String) : RuntimeException(validationMessage)
 class UgyldigAdresse(validationMessage: String) : RuntimeException(validationMessage)
+class UkjentAdresse(validationMessage: String) : RuntimeException(validationMessage)
 typealias Valideringsfeil = String
 
 // Dependencies
