@@ -132,7 +132,8 @@ Implementer en endring i domenetypene slik at listen aldri kan være tom.
 > 
 > Konstruktøren i NonEmptyList returnerer et Result. Sjekk resultatet. Du kan kaste en `UgyldigeOrdreLinjer`-exception om listen var tom.
 
-### Del 2 Priset bestilling
+### Del 2 Pris Bestilling
+TODO Oppgaver relatert til å prise bestillingen. Tema? Kanskje noe med agegratrot. Eller noen enklere oppgaver bare for å bli kjent med steget.
 
 ### Del 3 Events
 
@@ -141,10 +142,6 @@ I denne delen av workshoppen jobber vi videre med endringer i kravene fra Magnus
 Målet er å reflektere over hvordan endringer påvirker både domenemodellen og koden, og å se hvordan en domene-drevet tilnærming kan håndtere slike justeringer.
 
 Det finnes ingen fasit her – det er opp til deg hvordan du velger å løse oppgavene, og poenget er å lære gjennom å eksperimentere og reflektere.Vi ser på 4 forskjellige typer endringer:
-* Legge til et nytt steg i workflowen.
-* Legge til input i workflowen.
-* Endre definisjonen av en kjernetype og se hvordan det påvirker systemet.
-* Endre hele arbeidsflyten til å stemme med forretningregler. 
 
 #### Oppgave X_1 Legge til fraktkostnader
 En sen søndagskveld legger du i vei til et lokalt klatresenter i Oslo. Når du kommer kommer inn får du øye på en kar i bar overkropp som filmer seg selv. Akkurat i det du innser at det er Magnus, så roper han på deg:

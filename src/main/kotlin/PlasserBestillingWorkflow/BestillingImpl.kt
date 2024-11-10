@@ -2,7 +2,6 @@ package PlasserBestillingWorkflow
 
 import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.*
-import utils.NonEmptyList
 
 
 // ==================================
@@ -113,10 +112,12 @@ data class KundeInfo(val kundeId: KundeId, val kundeEpost: String)
 // Pris bestilling steg
 // ==================================
 private fun prisOrdre(
-    getProduktPris: HentProduktPris, validertBestilling: ValidertBestilling
+    getProduktPris: HentProduktPris,        // Dependency
+    validertBestilling: ValidertBestilling  // Input
 ): Result<PrisetBestilling, String> {
-    val faktureringssum =
-        validertBestilling.ordrelinjer.map { prisOrdreLinje(getProduktPris, it) }.sumOf { it.toDouble() }
+    val faktura =
+        validertBestilling.ordrelinjer.map { prisOrdreLinje(getProduktPris, it) }
+            .sumOf { it.toDouble() }
             .let { Pris.of(it) }
     return Ok(
         PrisetBestilling(
@@ -124,13 +125,13 @@ private fun prisOrdre(
             fakturaadresse = validertBestilling.fakturaAdresse,
             kundeInfo = validertBestilling.kundeInfo,
             leveringsadresse = validertBestilling.leveringsadresse,
-            faktureringssum = faktureringssum
+            fakturaSum = faktura
         )
     )
 }
 
 private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: ValidertOrdrelinje): Number {
-    val quantity: Int = when (ordrelinje.ordreMengde) { // TODO Consider this structure
+    val quantity: Int = when (ordrelinje.ordreMengde) { // TODO Remove this structure
         is OrdreMengde.Enhet -> ordrelinje.ordreMengde.mengde.value.toInt()
         is OrdreMengde.Kilo -> ordrelinje.ordreMengde.mengde.value.toInt()
     }
@@ -160,7 +161,7 @@ private fun lagHendelser(prisetBestilling: PrisetBestilling, sendEpostResultat: 
 }
 
 private fun lagFakturerBarHendelse(prisetBestilling: PrisetBestilling): FakturerbarOrdrePlassert? {
-    return if (prisetBestilling.faktureringssum.value.toDouble() > 0) {
-        FakturerbarOrdrePlassert(ordreId = prisetBestilling.ordreId, fakturadresse = prisetBestilling.fakturaadresse, fakturasum = prisetBestilling.faktureringssum)
+    return if (prisetBestilling.fakturaSum.value.toDouble() > 0) {
+        FakturerbarOrdrePlassert(ordreId = prisetBestilling.ordreId, fakturadresse = prisetBestilling.fakturaadresse, fakturasum = prisetBestilling.fakturaSum)
     } else null
 }

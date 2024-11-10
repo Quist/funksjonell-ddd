@@ -76,5 +76,5 @@ data class PrisetBestilling(
     val kundeInfo: KundeInfo,
     val leveringsadresse: ValidertAdresse,
     val fakturaadresse: ValidertAdresse,
-    val faktureringssum: Pris
+    val fakturaSum: Pris
 )
