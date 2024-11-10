@@ -37,6 +37,8 @@ data class FakturerbarOrdrePlassert(val ordreId: OrdreId, val fakturadresse: Val
 class UgyldigOrdreException(validationMessage: String) : RuntimeException(validationMessage)
 class UgyldigAdresse(validationMessage: String) : RuntimeException(validationMessage)
 class UkjentAdresse(validationMessage: String) : RuntimeException(validationMessage)
+class UgyldigEpost(validationMessage: String) : RuntimeException(validationMessage)
+class EpostIkkeVerifisert(validationMessage: String) : RuntimeException(validationMessage)
 typealias Valideringsfeil = String
 
 // Dependencies
@@ -45,6 +47,7 @@ typealias SjekkAdresseEksisterer = (IkkeValidertBestilling.IkkeValidertAdresse) 
 typealias HentProduktPris = (produktkode: Produktkode) -> Int
 typealias LagBekreftelsesEpostHtml = (PrisetBestilling) -> HtmlString
 typealias SendBekreftelsesEpost = (email: String, letter: HtmlString) -> SendEpostResultat
+typealias SjekkEpostValideringsStatus = (email: String) -> Boolean
 
 // Typer for dependencies
 enum class SendEpostResultat {

@@ -53,3 +53,17 @@ fun lagBekreftelsesEpostHtml(prisetBestilling: PrisetBestilling): HtmlString {
 fun sendBekreftelsesEpost(email: String, letter: HtmlString): SendEpostResultat {
     return SendEpostResultat.Sendt
 }
+
+fun sjekkEpostStatus(email: String): Boolean {
+    // Liste over verifiserte e-poster for berømte klatrere
+    val verifiserteEposter = listOf(
+        "adam.ondra@climbing.com",
+        "alex.honnold@climbing.com",
+        "lynn.hill@climbing.com",
+        "tommy.caldwell@climbing.com",
+        "chris.sharma@climbing.com"
+    )
+
+    // Returnerer true hvis e-posten finnes i listen over verifiserte e-poster
+    return email in verifiserteEposter
+}

@@ -88,16 +88,37 @@ I det Magnus klipper seg inn i første klipp, tar han opp et problem rundt postn
 * Innfør en ny type, `Postnummer`. Endre feltet postnummer i `ValidertAdresse` til å være av denne typen. `Postnummer` skal ha som invariant at postnummer er et tall mellom 0001 og 9999. Du kan kaste en `ugyldigAdresse`-exception om det ikke er det.
 
 #### Oppgave 1c 
-Magnus forsetter å prate med han klatrer oppover. Han forteller om at selv om det formelt sett er gyldige adresser som sendes inn, så hender det at adressen rett og slett ikke finnes!
-Du feilsøker litt og ser fort at TeamMedlem fra et konkurrende konsulentselskap har lagt igjen en TODO i `tilValidertAdresse`funksjonen.
+Magnus forsetter å prate mens han klatrer oppover. Han forteller om at selv om det formelt sett er gyldige adresser som sendes inn, så hender det at adressen rett og slett ikke finnes!
+Du feilsøker litt og ser fort at et teammedlemm fra et konkurrende konsulentselskap har lagt igjen en TODO i `tilValidertAdresse`funksjonen.
 
-* Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`
+* Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`.
 
 > Vi lar være her, men her kunne vi også valgt å innføre en ny type for å både reflektere en gyldig og eksisterende adresse:
 > ```data class ValidertOgEksisterendeNorskAdresse ..```
 
-#### Oppgave 2
-TODO: Kundeinfo og validert epost
+#### Oppgave 2a
+Etter å ha toppet ut ruta, firer Magnus seg ned mot bakken. På vei ned forteller han om et annet problem de har hatt: ugyldige eposter som blir sendt inn i systemet.
+
+* Implementer en validering av epost som validerer at det ihvertfall er en alfakrøll i eposten.
+
+> Du kan løse dette på flere måter. Ett eksempel er ved å innføre en egen e-post data class.
+
+
+#### Oppgave 2b
+I det Magnus setter foten på bakken igjen, hører du noen voldsomme skrik fra en langbeint klatrer i naboveggen. Magnus titter raskt bort, før han forteller videre om hvordan de ser for seg å modellere epost.
+Ikke bare er den validert – en epost skal verifiseres at den faktisk tilhører brukeren. Magnus foreslår derfor at dere endrer den delte mentale modellen for epost til å være en slags union type alá `VerifisertEpost | UverifisertEpost`
+
+```kotlin
+sealed interface EpostStatus {
+    val epost: Epost
+}
+data class ValidertBestilling(..., val epost: EpostStatus)
+```
+
+1. **Implementer to dataklasser, `VerifisertEpost` og `UverifisertEpost`, som arver fra Sealed Interface EpostStatus.**
+2. **Implementer de nødvendige kodeendringene i implementasjonen etter at domenetypene er oppdatert. Hint: det finnes en dependency SjekkEpostStatus som kan brukes. Husk at den bør sendes med i hovedfunksjonen.**
+
+> Sjekk ut dokumentasjonen for Sealed Interface om du trenger hjelp 🧠
 
 #### Oppgave 3
 TODO: Noe med ordrelinjer

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import kotlin.test.Ignore
 import kotlin.test.assertEquals
 import kotlin.test.junit5.JUnit5Asserter.fail
 
@@ -55,27 +54,31 @@ class Oppgaver {
             )
             assertThrows<UkjentAdresse> { plasserBestillingWorkflow(bestilling) }
         }
-    }
 
-    @Test
-    @Ignore
-    @DisplayName("Ugyldige enhetsmengder valideres")
-    fun oppgave2a() {
-        // Test som lager en ordre med ulovlig Enhetsmengde
-        val bestilling = eksempelGyldigBestilling.bestilling.copy(
-            ordrelinjer = listOf(
-                IkkeValidertOrdrelinje(
-                    produktkode = "MagDust",
-                    mengde = 10_000
+        @Test
+        @DisplayName("Oppgave 2a: Valider epost")
+        fun oppgave2a() {
+            val bestilling = eksempelGyldigBestilling.copy(
+                bestilling = eksempelGyldigBestilling.bestilling.copy(
+                    kundeEpost = "testeposten"
                 )
             )
-        )
-        assertThrows<UgyldigAdresse> {
-            plasserBestillingWorkflow(
-                eksempelGyldigBestilling.copy(bestilling = bestilling)
-            )
+            assertThrows<UgyldigEpost> { plasserBestillingWorkflow(bestilling) }
         }
+
+        @Test
+        @DisplayName("Oppgave 2b: Sjekk verifisert status")
+        fun oppgave2b() {
+            val bestilling = eksempelGyldigBestilling.copy(
+                bestilling = eksempelGyldigBestilling.bestilling.copy(
+                    kundeEpost = "ikke_verifisert_epost@hotmail.com"
+                )
+            )
+            assertThrows<EpostIkkeVerifisert> { plasserBestillingWorkflow(bestilling) }
+        }
+
     }
+
 
     @Test
     @DisplayName("Invariant for ordrelinjer")

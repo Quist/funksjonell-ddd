@@ -107,7 +107,7 @@ data class ValidertOrdrelinje(
 )
 
 data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
-data class KundeInfo(val kundeId: KundeId, val kundeEpost: String) // TODO Vurder å introdusere konseptet med validerte eposter
+data class KundeInfo(val kundeId: KundeId, val kundeEpost: String)
 
 // ==================================
 // Pris bestilling steg
