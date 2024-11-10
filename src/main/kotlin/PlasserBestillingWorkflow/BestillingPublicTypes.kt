@@ -17,11 +17,12 @@ data class IkkeValidertBestilling(
     val ordreId: String,
     val kundeId: String,
     val kundeEpost: String,
-    val leveringsadresse: String,
-    val fakturadresse: String,
+    val leveringsadresse: IkkeValidertAdresse,
+    val fakturadresse: IkkeValidertAdresse,
     val ordrelinjer: List<IkkeValidertOrdrelinje>
 ) {
     data class IkkeValidertOrdrelinje(val produktkode: String, val mengde: Number)
+    data class IkkeValidertAdresse(val gateadresse: String, val postnummer: String)
 }
 
 // Output
@@ -39,7 +40,7 @@ typealias Valideringsfeil = String
 
 // Dependencies
 typealias SjekkProduktKodeEksisterer = (String) -> Boolean
-typealias SjekkAdresseEksisterer = (String) -> Boolean
+typealias SjekkAdresseEksisterer = (IkkeValidertBestilling.IkkeValidertAdresse) -> Boolean
 typealias HentProduktPris = (produktkode: Produktkode) -> Int
 typealias LagBekreftelsesEpostHtml = (PrisetBestilling) -> HtmlString
 typealias SendBekreftelsesEpost = (email: String, letter: HtmlString) -> SendEpostResultat

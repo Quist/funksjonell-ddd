@@ -30,8 +30,8 @@ fun initializePlasserBestillingWorkflow(
 // ==================================
 private fun validerBestilling(
     sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
-    sjekkAdresseEksisterer: SjekkAdresseEksisterer, // Dependency
-    bestilling: IkkeValidertBestilling // Input
+    sjekkAdresseEksisterer: SjekkAdresseEksisterer,         // Dependency
+    bestilling: IkkeValidertBestilling                      // Input
 ): Result<ValidertBestilling, Nothing> {
     val ordreId = OrdreId.of(bestilling.ordreId)
     val leveringsadresse = tilValidertAdresse(sjekkAdresseEksisterer, bestilling.leveringsadresse)
@@ -81,12 +81,13 @@ private fun tilProduktKode(sjekkProduktKodeEksisterer: SjekkProduktKodeEksistere
 }
 
 private fun tilValidertAdresse(
-    sjekkAdresseEksisterer: SjekkAdresseEksisterer, adresselinje: String
+    sjekkAdresseEksisterer: SjekkAdresseEksisterer,
+    adresse: IkkeValidertBestilling.IkkeValidertAdresse
 ): ValidertAdresse {
-    return if (sjekkAdresseEksisterer(adresselinje)) { // Kall eksterne tjeneste
-        ValidertAdresse(adresselinje)
+    return if (sjekkAdresseEksisterer(adresse)) { // Kall eksterne tjeneste
+        ValidertAdresse(adresse.gateadresse, adresse.postnummer.toInt())
     } else {
-        throw UgyldigAdresse("Ugyldig adresse: $adresselinje")
+        throw UgyldigAdresse("Ugyldig adresse: $adresse")
     }
 }
 
@@ -103,7 +104,7 @@ data class ValidertOrdrelinje(
     val ordreMengde: OrdreMengde,
 )
 
-data class ValidertAdresse(val adresselinje: String)
+data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
 data class KundeInfo(val kundeId: KundeId, val kundeEpost: String) // TODO Vurder å introdusere konseptet med validerte eposter
 
 // ==================================

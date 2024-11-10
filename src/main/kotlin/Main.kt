@@ -9,11 +9,11 @@ fun main(args: Array<String>) {
     plasserBestillingWorkflow(
         Bestilling(
             IkkeValidertBestilling(
-                fakturadresse = "Testveien 07",
+                fakturadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
                 ordreId = "12",
                 kundeId = "123",
                 kundeEpost = "test@testesen.com",
-                leveringsadresse = "Testveien 7",
+                leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
                 ordrelinjer = listOf(
                     IkkeValidertBestilling.IkkeValidertOrdrelinje(mengde = 5, produktkode = "MagDust")
                 )
@@ -28,8 +28,8 @@ fun sjekkProduktKodeEksisterer(produktKode: String): Boolean {
     return produktKode in gyldigeProdukter
 }
 
-fun sjekkAdresseEksisterer(adresse: String): Boolean {
-    return adresse.isNotEmpty()
+fun sjekkAdresseEksisterer(adresse: IkkeValidertBestilling.IkkeValidertAdresse): Boolean {
+    return adresse.postnummer.isNotEmpty() && adresse.gateadresse.isNotEmpty()
 }
 
 fun hentProduktPris(produktKode: Produktkode): Int {

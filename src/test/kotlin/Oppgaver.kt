@@ -13,8 +13,7 @@ import kotlin.test.junit5.JUnit5Asserter.fail
 
 class Oppgaver {
 
-    // Initialize plasserBestilling med dependencies og eventuelt test data.
-    // Funksjonell måte å gjøre dependency injection på.
+    // Her konstuerer vi "hovedfunksjonen" ved å pakke inn all dependencies som trengs.
     val plasserBestillingWorkflow: PlasserBestillingWorkflow = initializePlasserBestillingWorkflow(
         ::sjekkProduktKodeEksisterer,
         ::sjekkAdresseEksisterer,
@@ -22,6 +21,19 @@ class Oppgaver {
         ::lagBekreftelsesEpostHtml,
         ::sendBekreftelsesEpost
     )
+
+    @Nested
+    @DisplayName("Del 1 - Validering")
+    inner class Del1 {
+
+        @Test
+        @DisplayName("Oppgave 1a: Umulig å lage en Validert Adresse uten gateadresse")
+        fun oppgave1() {
+            assertThrows<UgyldigAdresse> {
+                ValidertAdresse("", 0)
+            }
+        }
+    }
 
     @Test
     @Ignore
@@ -111,25 +123,6 @@ class Oppgaver {
             }
         }
 
-        @Test
-        @DisplayName("Adresser skal valideres")
-        fun adresserIOrdreValideres() {
-            assertThrows<UgyldigAdresse> {
-                plasserBestillingWorkflow(
-                    eksempelBestilling.copy(
-                        bestilling = eksempelBestilling.bestilling.copy(leveringsadresse = "")
-                    )
-                )
-            }
-
-            assertThrows<UgyldigAdresse> {
-                plasserBestillingWorkflow(
-                    eksempelBestilling.copy(
-                        bestilling = eksempelBestilling.bestilling.copy(fakturadresse = "")
-                    )
-                )
-            }
-        }
 
         @Test
         @DisplayName("Ordren skal prises")
@@ -149,8 +142,8 @@ private val eksempelBestilling = Bestilling(
         ordreId = "1",
         kundeId = "Adam Åndra",
         kundeEpost = "test@testesen.com",
-        leveringsadresse = "Testveien 5",
-        fakturadresse = "Testveien 5",
+        leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
+        fakturadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
         ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
     ),
     time = LocalDateTime.now(),

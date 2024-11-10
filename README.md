@@ -69,12 +69,17 @@ Last ned IntelliJ IDEA hvis du ikke allerede har det installert.
 
 3. Du finner oppgavene lenger ned her. Lykke til!
 
-### Oppgaver 📋
-Magnus Midtpø kjenner ikke til Integers og Strings. Vi har derfor modellert ordreId som en egen type.
+## 📋 Oppgaver 
 
-#### Oppgave 1 - Domenemodellering med typer
 
-> Ved å modellere det på denne måten gjør vi det "umulig" å sende med en kundeId der det skulle være en ordreId og vica verca. Kompilatoren hjelper oss å holde styr på koden vår.
+### Del 1 - Validering
+> I DDD handler mye av designet om å beskytte domenet og sørge for at det forretningslogiske laget forblir konsistent og robust. Validering av input hjelper med å forhindre at ugyldige eller uventede data når inn til kjerneobjektene og ødelegger forretningslogikken.
+
+#### Oppgave 1a - Domenemodellering med typer
+Magnus spør om du vil være med å klatre. I det du sikrer Magnus og han er på vei opp i veggen, forteller han at han har fått en noen sinte eposter fra fraktavdelingen. De mottar masse bestillinger med ugyldige gateadresser.
+
+* Endre `ValidertAdresse`-typen slik at konstruktøren blir privat. Legg til en companion object med en create-metode som sørger for at gateadressefeltet ikke et tomt.
+
 
 ##### 1a Definere en enkel value type
 Kjør enhetstesten. Den feiler fordi KundeId ikke er definert som en type. Definer den
