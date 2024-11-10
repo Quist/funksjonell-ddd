@@ -135,7 +135,7 @@ Implementer en endring i domenetypene slik at listen aldri kan være tom.
 ### Del 2 Pris Bestilling
 TODO Oppgaver relatert til å prise bestillingen. Tema? Kanskje noe med agegratrot. Eller noen enklere oppgaver bare for å bli kjent med steget.
 
-### Del 3 Events
+### Del 3 Bekreft bestilling steg
 
 #### 💰Del 4 -Videreutvikle designet 
 I denne delen av workshoppen jobber vi videre med endringer i kravene fra Magnus.
@@ -161,6 +161,7 @@ b: Inkluderer fraktkostnaden i bekreftelseseposten.
 #### Bruk Result-typen istedenfor å kaste exceptions
 Refaktorere kodebasen til å bruke Result-typen i stedet for å kaste exceptions. 
 
+> [!TIP]
 > **Hvorfor bruke result-typen?**
 > 
 > 

@@ -19,8 +19,8 @@ fun initializePlasserBestillingWorkflow(
             sjekkProduktKodeEksisterer, sjekkAdresseEksisterer, bestilling.bestilling
         )
             .andThen { prisOrdre(hentProduktPris, it) }
-            .map { bekreftBestilling(lagBekreftelsesEpostHtml, sendBekreftelsesEpost, it) }
-            .flatMap { pair -> Ok(lagHendelser(pair.second, pair.first)) }
+            .andThen { bekreftBestilling(lagBekreftelsesEpostHtml, sendBekreftelsesEpost, it) }
+            .andThen { Ok(lagHendelser(it.prisetBestilling, it.sendEpostResultat)) }
     }
 }
 
@@ -145,23 +145,39 @@ private fun bekreftBestilling(
     lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,  // Dependency
     sendBekreftelsesEpost: SendBekreftelsesEpost,        // Dependency
     prisetBestilling: PrisetBestilling                   // Input
-): Pair<SendEpostResultat, PrisetBestilling> {
+): Result<BekreftetBestilling, String> {
     lagBekreftelsesEpostHtml(prisetBestilling).let { letter ->
-        return Pair(sendBekreftelsesEpost(prisetBestilling.kundeInfo.kundeEpost, letter), prisetBestilling)
+        return Ok(
+            BekreftetBestilling(
+                sendBekreftelsesEpost(prisetBestilling.kundeInfo.kundeEpost, letter),
+                prisetBestilling
+            )
+        )
     }
 }
+
+data class BekreftetBestilling(val sendEpostResultat: SendEpostResultat, val prisetBestilling: PrisetBestilling)
 
 // ==================================
 // Lag hendelser
 // ==================================
-private fun lagHendelser(prisetBestilling: PrisetBestilling, sendEpostResultat: SendEpostResultat): PlasserBestillingHendelser {
+private fun lagHendelser(
+    prisetBestilling: PrisetBestilling,
+    sendEpostResultat: SendEpostResultat
+): PlasserBestillingHendelser {
     return PlasserBestillingHendelser(
-        bekreftelseSent = sendEpostResultat, ordrePlassert = prisetBestilling, fakturerbarOrdrePlassert = lagFakturerBarHendelse(prisetBestilling)
+        bekreftelseSent = sendEpostResultat,
+        ordrePlassert = prisetBestilling,
+        fakturerbarOrdrePlassert = lagFakturerBarHendelse(prisetBestilling)
     )
 }
 
 private fun lagFakturerBarHendelse(prisetBestilling: PrisetBestilling): FakturerbarOrdrePlassert? {
     return if (prisetBestilling.fakturaSum.value.toDouble() > 0) {
-        FakturerbarOrdrePlassert(ordreId = prisetBestilling.ordreId, fakturadresse = prisetBestilling.fakturaadresse, fakturasum = prisetBestilling.fakturaSum)
+        FakturerbarOrdrePlassert(
+            ordreId = prisetBestilling.ordreId,
+            fakturadresse = prisetBestilling.fakturaadresse,
+            fakturasum = prisetBestilling.fakturaSum
+        )
     } else null
 }
