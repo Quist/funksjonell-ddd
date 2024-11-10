@@ -84,7 +84,12 @@ private fun tilValidertAdresse(
     sjekkAdresseEksisterer: SjekkAdresseEksisterer,
     adresse: IkkeValidertBestilling.IkkeValidertAdresse
 ): ValidertAdresse {
-    return if (sjekkAdresseEksisterer(adresse)) { // Kall eksterne tjeneste
+    // Sjekk om både gateadresse og postnummer er ikke-null og validere dem
+    if (adresse.gateadresse.isNullOrEmpty() || adresse.postnummer.isNullOrEmpty()) {
+        throw UgyldigAdresse("Gateadresse eller postnummer er null eller tom: $adresse")
+    }
+
+    return if (sjekkAdresseEksisterer(adresse)) { // Kall ekstern tjeneste
         ValidertAdresse(adresse.gateadresse, adresse.postnummer.toInt())
     } else {
         throw UgyldigAdresse("Ugyldig adresse: $adresse")

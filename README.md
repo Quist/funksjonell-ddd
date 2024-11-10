@@ -70,16 +70,22 @@ Last ned IntelliJ IDEA hvis du ikke allerede har det installert.
 3. Du finner oppgavene lenger ned her. Lykke til!
 
 ## 📋 Oppgaver 
-
+Det er skrevet JUnit tester for flere av oppgavene. Det kan være et lurt sted å starte for å få oversikt over oppgaven og validere løsningen. Se `Oppgaver.kt`
 
 ### Del 1 - Validering
 > I DDD handler mye av designet om å beskytte domenet og sørge for at det forretningslogiske laget forblir konsistent og robust. Validering av input hjelper med å forhindre at ugyldige eller uventede data når inn til kjerneobjektene og ødelegger forretningslogikken.
 
-#### Oppgave 1a - Domenemodellering med typer
+#### Oppgave 1a
 Magnus spør om du vil være med å klatre. I det du sikrer Magnus og han er på vei opp i veggen, forteller han at han har fått en noen sinte eposter fra fraktavdelingen. De mottar masse bestillinger med ugyldige gateadresser.
 
 * Endre `ValidertAdresse`-typen slik at konstruktøren blir privat. Legg til en companion object med en create-metode som sørger for at gateadressefeltet ikke et tomt.
 
+#### Oppgave 1b
+I det Magnus klipper seg inn i første klipp, tar han opp et problem rundt postnummer. For Magnus og alle andre i firmaet er det ganske "selvsagt" at norske postnummer er tallverdier mellom 0001 og 9999. 
+
+"Ahh",- tenker du inne i deg. Hvis det er sånn de snakker om det, så bør vi nok også modelere det sånn.
+
+* Innfør en ny type, `Postnummer`. Endre feltet postnummer i `ValidertAdresse` til å være av denne typen. `Postnummer` skal ha som invariant at postnummer er et tall mellom 0001 og 9999. Du kan kaste en `ugyldigAdresse`-exception om det ikke er det.
 
 ##### 1a Definere en enkel value type
 Kjør enhetstesten. Den feiler fordi KundeId ikke er definert som en type. Definer den
@@ -127,3 +133,16 @@ b: Inkluderer fraktkostnaden i bekreftelseseposten.
 
 #### Oppgave X_4 Implementere søndagsstengt
 
+### 🌟 Bonusoppgaver
+
+#### Bruk Result-typen istedenfor å kaste exceptions
+Refaktorere kodebasen til å bruke Result-typen i stedet for å kaste exceptions. 
+
+> **Hvorfor bruke result-typen?**
+> 
+> 
+> Funksjonell feilhåndtering: Result gjør det tydelig hvordan feil skal håndteres, og tvinger kallere til å forholde seg til mulige feil, noe som reduserer risikoen for uventede programfeil.
+>
+> Bedre lesbarhet: Koden blir mer lesbar og forståelig ved at feilhåndtering er en del av metodesignaturen, og det er lett å se hvilke situasjoner som kan føre til feil.
+> 
+> Ingen skjulte kontrollflytendringer: Exceptions kan gjøre kontrollflyten uforutsigbar, mens Result gjør flyten eksplisitt og enklere å følge.

@@ -27,11 +27,22 @@ class Oppgaver {
     inner class Del1 {
 
         @Test
-        @DisplayName("Oppgave 1a: Umulig å lage en Validert Adresse uten gateadresse")
-        fun oppgave1() {
+        @DisplayName("Oppgave 1a: Gjør det umulig å lage ValidertAdresse uten gateadresse")
+        fun oppgave1a() {
             assertThrows<UgyldigAdresse> {
                 ValidertAdresse("", 0)
             }
+        }
+
+        @Test
+        @DisplayName("Oppgave 1b: Gjør det umulig å sende inn en bestilling uten et gyldig postnummer")
+        fun oppgave1b() {
+            val bestilling = eksempelGyldigBestilling.copy(
+                bestilling = eksempelGyldigBestilling.bestilling.copy(
+                    leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "-55")
+                )
+            )
+            assertThrows<UgyldigAdresse> { plasserBestillingWorkflow(bestilling) }
         }
     }
 
@@ -40,7 +51,7 @@ class Oppgaver {
     @DisplayName("Ugyldige enhetsmengder valideres")
     fun oppgave2a() {
         // Test som lager en ordre med ulovlig Enhetsmengde
-        val bestilling = eksempelBestilling.bestilling.copy(
+        val bestilling = eksempelGyldigBestilling.bestilling.copy(
             ordrelinjer = listOf(
                 IkkeValidertOrdrelinje(
                     produktkode = "MagDust",
@@ -50,7 +61,7 @@ class Oppgaver {
         )
         assertThrows<UgyldigAdresse> {
             plasserBestillingWorkflow(
-                eksempelBestilling.copy(bestilling = bestilling)
+                eksempelGyldigBestilling.copy(bestilling = bestilling)
             )
         }
     }
@@ -60,8 +71,8 @@ class Oppgaver {
     fun oppgave2b() {
         assertThrows<IllegalStateException> {
             plasserBestillingWorkflow(
-                eksempelBestilling.copy(
-                    bestilling = eksempelBestilling.bestilling.copy(ordrelinjer = emptyList())
+                eksempelGyldigBestilling.copy(
+                    bestilling = eksempelGyldigBestilling.bestilling.copy(ordrelinjer = emptyList())
                 )
             )
         }
@@ -73,8 +84,8 @@ class Oppgaver {
     fun adresseNonPrivatKonstrtør() {
         assertThrows<IllegalStateException> {
             plasserBestillingWorkflow(
-                eksempelBestilling.copy(
-                    bestilling = eksempelBestilling.bestilling.copy(ordrelinjer = emptyList())
+                eksempelGyldigBestilling.copy(
+                    bestilling = eksempelGyldigBestilling.bestilling.copy(ordrelinjer = emptyList())
                 )
             )
         }
@@ -85,8 +96,8 @@ class Oppgaver {
     fun oppgave2c() {
         assertThrows<UgyldigOrdreException> {
             plasserBestillingWorkflow(
-                eksempelBestilling.copy(
-                    bestilling = eksempelBestilling.bestilling.copy(
+                eksempelGyldigBestilling.copy(
+                    bestilling = eksempelGyldigBestilling.bestilling.copy(
                         ordrelinjer = listOf(
                             IkkeValidertOrdrelinje(
                                 produktkode = "Finnes ikke",
@@ -104,7 +115,7 @@ class Oppgaver {
     inner class Tester {
         @Test
         fun happyCase() {
-            val result = plasserBestillingWorkflow(eksempelBestilling)
+            val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
             result.mapBoth(
                 success = { value -> assertTrue(true) },
                 failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
@@ -116,8 +127,8 @@ class Oppgaver {
         fun ordreIdValideres() {
             assertThrows<UgyldigOrdreException> {
                 plasserBestillingWorkflow(
-                    eksempelBestilling.copy(
-                        bestilling = eksempelBestilling.bestilling.copy(ordreId = "")
+                    eksempelGyldigBestilling.copy(
+                        bestilling = eksempelGyldigBestilling.bestilling.copy(ordreId = "")
                     )
                 )
             }
@@ -127,7 +138,7 @@ class Oppgaver {
         @Test
         @DisplayName("Ordren skal prises")
         fun ordrePrises() {
-            val result = plasserBestillingWorkflow(eksempelBestilling)
+            val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
             result.mapBoth(
                 success = { value -> assertEquals(50_000, value.fakturerbarOrdrePlassert?.fakturasum?.value) },
                 failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
@@ -137,7 +148,7 @@ class Oppgaver {
     }
 }
 
-private val eksempelBestilling = Bestilling(
+private val eksempelGyldigBestilling = Bestilling(
     bestilling = IkkeValidertBestilling(
         ordreId = "1",
         kundeId = "Adam Åndra",

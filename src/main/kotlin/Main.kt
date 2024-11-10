@@ -29,7 +29,7 @@ fun sjekkProduktKodeEksisterer(produktKode: String): Boolean {
 }
 
 fun sjekkAdresseEksisterer(adresse: IkkeValidertBestilling.IkkeValidertAdresse): Boolean {
-    return adresse.postnummer.isNotEmpty() && adresse.gateadresse.isNotEmpty()
+    return !adresse.postnummer.isNullOrBlank() || !adresse.gateadresse.isNullOrBlank()
 }
 
 fun hentProduktPris(produktKode: Produktkode): Int {
