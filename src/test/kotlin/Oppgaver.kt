@@ -79,30 +79,15 @@ class Oppgaver {
 
     }
 
-
     @Test
-    @DisplayName("Invariant for ordrelinjer")
-    fun oppgave2b() {
-        assertThrows<IllegalStateException> {
-            plasserBestillingWorkflow(
-                eksempelGyldigBestilling.copy(
-                    bestilling = eksempelGyldigBestilling.bestilling.copy(ordrelinjer = emptyList())
-                )
+    @DisplayName("Oppgave 3a: Ordrelinjer kan ikke være en tom liste")
+    fun oppgave3a() {
+        val bestilling = eksempelGyldigBestilling.copy(
+            bestilling = eksempelGyldigBestilling.bestilling.copy(
+                ordrelinjer = emptyList()
             )
-        }
-    }
-
-    @Test
-    // TODO Implementer
-    @DisplayName("Oppgave der man fikser en bug med valider adresse som ikke har privat konstruktør.")
-    fun adresseNonPrivatKonstrtør() {
-        assertThrows<IllegalStateException> {
-            plasserBestillingWorkflow(
-                eksempelGyldigBestilling.copy(
-                    bestilling = eksempelGyldigBestilling.bestilling.copy(ordrelinjer = emptyList())
-                )
-            )
-        }
+        )
+        assertThrows<UgyldigeOrdreLinjer> { plasserBestillingWorkflow(bestilling) }
     }
 
     @Test
@@ -158,7 +143,6 @@ class Oppgaver {
                 failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
             )
         }
-
     }
 }
 

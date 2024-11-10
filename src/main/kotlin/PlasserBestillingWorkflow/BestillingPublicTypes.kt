@@ -39,6 +39,7 @@ class UgyldigAdresse(validationMessage: String) : RuntimeException(validationMes
 class UkjentAdresse(validationMessage: String) : RuntimeException(validationMessage)
 class UgyldigEpost(validationMessage: String) : RuntimeException(validationMessage)
 class EpostIkkeVerifisert(validationMessage: String) : RuntimeException(validationMessage)
+class UgyldigeOrdreLinjer(validationMessage: String) : RuntimeException(validationMessage)
 typealias Valideringsfeil = String
 
 // Dependencies

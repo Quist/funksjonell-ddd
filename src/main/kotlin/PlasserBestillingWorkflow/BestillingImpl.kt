@@ -55,8 +55,8 @@ private fun validerBestilling(
 
 private fun tilValiderteOrdrelinjer(
     tilProduktKode: (String) -> Produktkode, ordrelinjer: List<IkkeValidertOrdrelinje>
-): NonEmptyList<ValidertOrdrelinje> {
-    return NonEmptyList.fromList(ordrelinjer.map {
+): List<ValidertOrdrelinje> {
+    return (ordrelinjer.map {
         tilValidertValidertOrdrelinje(tilProduktKode, it)
     })
 }
@@ -98,7 +98,7 @@ data class ValidertBestilling(
     val kundeInfo: KundeInfo,
     val leveringsadresse: ValidertAdresse,
     val fakturaAdresse: ValidertAdresse,
-    val ordrelinjer: NonEmptyList<ValidertOrdrelinje>, // TODO Endre tilbake til vanlig list for å få testen til å feile.
+    val ordrelinjer: List<ValidertOrdrelinje>,
 )
 
 data class ValidertOrdrelinje(
@@ -116,7 +116,7 @@ private fun prisOrdre(
     getProduktPris: HentProduktPris, validertBestilling: ValidertBestilling
 ): Result<PrisetBestilling, String> {
     val faktureringssum =
-        validertBestilling.ordrelinjer.items.map { prisOrdreLinje(getProduktPris, it) }.sumOf { it.toDouble() }
+        validertBestilling.ordrelinjer.map { prisOrdreLinje(getProduktPris, it) }.sumOf { it.toDouble() }
             .let { Pris.of(it) }
     return Ok(
         PrisetBestilling(

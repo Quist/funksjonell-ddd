@@ -116,14 +116,23 @@ data class ValidertBestilling(..., val epost: EpostStatus)
 ```
 
 1. **Implementer to dataklasser, `VerifisertEpost` og `UverifisertEpost`, som arver fra Sealed Interface EpostStatus.**
-2. **Implementer de nødvendige kodeendringene i implementasjonen etter at domenetypene er oppdatert. Hint: det finnes en dependency SjekkEpostStatus som kan brukes. Husk at den bør sendes med i hovedfunksjonen.**
+2. **Implementer de nødvendige kodeendringene i implementasjonen etter at domenetypene er oppdatert. Hint:**
 
+> [!TIP]
 > Sjekk ut dokumentasjonen for Sealed Interface om du trenger hjelp 🧠
-
-#### Oppgave 3
-TODO: Noe med ordrelinjer
-> Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`
 > 
+> Det finnes en dependency SjekkEpostStatus som kan brukes. Husk at den bør sendes med i hovedfunksjonen.
+
+#### Oppgave 3a
+Den høylytte klatreren kommer bort. Det viser seg at han heter Adam Ondra og er endel av virksomheten til Magnus. Adam forteller om enda et problem. Det kommer mange bestillinger inn i systemet som ikke har noen ordrelinjer! Da blir det bare støy for faktura- og regnskapsavdelingen.
+
+Implementer en endring i domenetypene slik at listen aldri kan være tom.
+> [!TIP]
+> Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`.
+> 
+> Konstruktøren i NonEmptyList returnerer et Result. Sjekk resultatet. Du kan kaste en `UgyldigeOrdreLinjer`-exception om listen var tom.
+
+
 
 ### Del 2 Priset bestilling
 
