@@ -40,8 +40,6 @@ value class Pris private constructor(val value: Number) {
     }
 }
 
-// Ordremengde typer
-
 @JvmInline
 value class Mengde private constructor(val value: Int) {
     companion object {
@@ -59,5 +57,8 @@ data class PrisetBestilling(
     val kundeInfo: KundeInfo,
     val leveringsadresse: ValidertAdresse,
     val fakturaadresse: ValidertAdresse,
-    val fakturaSum: Pris
+    val fakturaSum: Pris,
+    val priseteOrdrelinjer: List<PrisetOrdrelinje>
 )
+
+data class PrisetOrdrelinje(val linjePris: Pris)

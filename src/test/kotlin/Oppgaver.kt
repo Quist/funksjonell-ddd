@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 class Oppgaver {
 
@@ -84,6 +85,12 @@ class Oppgaver {
             )
         )
         assertThrows<UgyldigeOrdreLinjer> { plasserBestillingWorkflow(bestilling) }
+    }
+
+    @Test
+    @DisplayName("Oppgave 4a: Prisede ordrelinjer")
+    fun oppgave4a() {
+        // TODO Lag oppgave eller fjern.
     }
 }
 

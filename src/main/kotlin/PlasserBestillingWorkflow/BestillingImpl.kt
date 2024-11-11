@@ -115,23 +115,24 @@ private fun prisOrdre(
     getProduktPris: HentProduktPris,        // Dependency
     validertBestilling: ValidertBestilling  // Input
 ): Result<PrisetBestilling, String> {
-    val faktura =
-        validertBestilling.ordrelinjer.map { prisOrdreLinje(getProduktPris, it) }
-            .sumOf { it.toDouble() }
-            .let { Pris.of(it) }
+    val prisedeOrdrelinjer = validertBestilling.ordrelinjer.map { prisOrdreLinje(getProduktPris, it) }
     return Ok(
         PrisetBestilling(
             ordreId = validertBestilling.ordreId,
             fakturaadresse = validertBestilling.fakturaAdresse,
             kundeInfo = validertBestilling.kundeInfo,
             leveringsadresse = validertBestilling.leveringsadresse,
-            fakturaSum = faktura
+            priseteOrdrelinjer = prisedeOrdrelinjer,
+            fakturaSum = Pris.of(1) // TODO Fix eller lag oppgave på denne
         )
     )
 }
 
-private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: ValidertOrdrelinje): Number {
-    return getProduktPris(ordrelinje.produktkode).let { ordrelinje.ordreMengde.value * it  }
+private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: ValidertOrdrelinje): PrisetOrdrelinje {
+    return getProduktPris(ordrelinje.produktkode)
+        .let { ordrelinje.ordreMengde.value * it }
+        .let { Pris.of(it) }
+        .let { PrisetOrdrelinje(it) }
 }
 
 // ==================================
