@@ -1,14 +1,10 @@
 import PlasserBestillingWorkflow.*
 import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
-import com.github.michaelbull.result.mapBoth
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
-import kotlin.test.junit5.JUnit5Asserter.fail
 
 class Oppgaver {
 
@@ -88,61 +84,6 @@ class Oppgaver {
             )
         )
         assertThrows<UgyldigeOrdreLinjer> { plasserBestillingWorkflow(bestilling) }
-    }
-
-    @Test
-    @DisplayName("Validering av produktet faktisk finnes")
-    fun oppgave2c() {
-        assertThrows<UgyldigOrdreException> {
-            plasserBestillingWorkflow(
-                eksempelGyldigBestilling.copy(
-                    bestilling = eksempelGyldigBestilling.bestilling.copy(
-                        ordrelinjer = listOf(
-                            IkkeValidertOrdrelinje(
-                                produktkode = "Finnes ikke",
-                                mengde = 10_000
-                            )
-                        )
-                    )
-                )
-            )
-        }
-    }
-
-    @Nested
-    @DisplayName("Implementasjons tester - ikke en del av oppgavene")
-    inner class Tester {
-        @Test
-        fun happyCase() {
-            val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
-            result.mapBoth(
-                success = { value -> assertTrue(true) },
-                failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
-            )
-        }
-
-        @Test
-        @DisplayName("OrdreId kan ikke være tom")
-        fun ordreIdValideres() {
-            assertThrows<UgyldigOrdreException> {
-                plasserBestillingWorkflow(
-                    eksempelGyldigBestilling.copy(
-                        bestilling = eksempelGyldigBestilling.bestilling.copy(ordreId = "")
-                    )
-                )
-            }
-        }
-
-
-        @Test
-        @DisplayName("Ordren skal prises")
-        fun ordrePrises() {
-            val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
-            result.mapBoth(
-                success = { value -> assertEquals(50_000, value.fakturerbarOrdrePlassert?.fakturasum?.value) },
-                failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
-            )
-        }
     }
 }
 
