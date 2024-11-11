@@ -70,12 +70,12 @@ private fun tilValidertValidertOrdrelinje(
     )
 }
 
-private fun tilProduktKode(sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer): (String) -> Produktkode.Klatreutstyr {
+private fun tilProduktKode(sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer): (String) -> Produktkode {
     return { produktKode: String ->
         if (!sjekkProduktKodeEksisterer(produktKode)) { // Kall eksterne tjeneste
             throw UgyldigOrdreException("Ugyldig kode: Produktet '$produktKode' eksisterer ikke")
         }
-        Produktkode.Klatreutstyr(KlatreutstyrKode(produktKode))
+        Produktkode(produktKode)
     }
 }
 

@@ -40,6 +40,7 @@ class UkjentAdresse(validationMessage: String) : RuntimeException(validationMess
 class UgyldigEpost(validationMessage: String) : RuntimeException(validationMessage)
 class EpostIkkeVerifisert(validationMessage: String) : RuntimeException(validationMessage)
 class UgyldigeOrdreLinjer(validationMessage: String) : RuntimeException(validationMessage)
+class FantIkkeProduktkode(validationMessage: String) : RuntimeException(validationMessage)
 typealias Valideringsfeil = String
 
 // Dependencies

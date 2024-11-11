@@ -26,15 +26,7 @@ value class KundeId private constructor(val value: String) {
 
 // Produktkode
 @JvmInline
-value class KlatreutstyrKode(val value: String)
-
-@JvmInline
-value class TskjorteKode(val value: String)
-
-sealed class Produktkode {
-    data class Klatreutstyr(val kode: KlatreutstyrKode) : Produktkode()
-    data class Tskjorte(val kode: TskjorteKode) : Produktkode()
-}
+value class Produktkode(val value: String)
 
 @JvmInline
 value class Pris private constructor(val value: Number) {
