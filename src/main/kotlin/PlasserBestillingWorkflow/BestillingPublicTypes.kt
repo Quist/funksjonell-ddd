@@ -46,7 +46,7 @@ typealias Valideringsfeil = String
 // Dependencies
 typealias SjekkProduktKodeEksisterer = (String) -> Boolean
 typealias SjekkAdresseEksisterer = (IkkeValidertBestilling.IkkeValidertAdresse) -> Boolean
-typealias HentProduktPris = (produktkode: Produktkode) -> Int
+typealias HentProduktPris = (produktkode: Produktkode) -> Double
 typealias LagBekreftelsesEpostHtml = (PrisetBestilling) -> HtmlString
 typealias SendBekreftelsesEpost = (email: String, letter: HtmlString) -> SendEpostResultat
 typealias SjekkEpostValideringsStatus = (email: String) -> Boolean
