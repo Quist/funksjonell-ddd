@@ -21,7 +21,7 @@ data class IkkeValidertBestilling(
     val fakturadresse: IkkeValidertAdresse,
     val ordrelinjer: List<IkkeValidertOrdrelinje>
 ) {
-    data class IkkeValidertOrdrelinje(val produktkode: String, val mengde: Number)
+    data class IkkeValidertOrdrelinje(val produktkode: String, val mengde: String)
     data class IkkeValidertAdresse(val gateadresse: String?, val postnummer: String?)
 }
 

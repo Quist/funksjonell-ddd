@@ -94,7 +94,7 @@ private val eksempelGyldigBestilling = Bestilling(
         kundeEpost = "test@testesen.com",
         leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
         fakturadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
-        ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
+        ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = "10000"))
     ),
     time = LocalDateTime.now(),
 )

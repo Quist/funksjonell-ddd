@@ -66,7 +66,7 @@ private fun tilValidertValidertOrdrelinje(
 ): ValidertOrdrelinje {
     return ValidertOrdrelinje(
         produktkode = tilProduktKode(ordrelinje.produktkode),
-        ordreMengde = OrdreMengde.Enhet(Enhetsmengde(ordrelinje.mengde)),
+        ordreMengde = Mengde.of(ordrelinje.mengde.toInt()),
     )
 }
 
@@ -102,7 +102,7 @@ data class ValidertBestilling(
 
 data class ValidertOrdrelinje(
     val produktkode: Produktkode,
-    val ordreMengde: OrdreMengde,
+    val ordreMengde: Mengde,
 )
 
 data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
@@ -131,11 +131,7 @@ private fun prisOrdre(
 }
 
 private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: ValidertOrdrelinje): Number {
-    val quantity: Int = when (ordrelinje.ordreMengde) { // TODO Remove this structure
-        is OrdreMengde.Enhet -> ordrelinje.ordreMengde.mengde.value.toInt()
-        is OrdreMengde.Kilo -> ordrelinje.ordreMengde.mengde.value.toInt()
-    }
-    return (quantity * getProduktPris(ordrelinje.produktkode));
+    return getProduktPris(ordrelinje.produktkode).let { ordrelinje.ordreMengde.value * it  }
 }
 
 // ==================================

@@ -46,7 +46,7 @@ class InternalTests {
     fun ordrePrises() {
         val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
         result.mapBoth(
-            success = { value -> assertEquals(50_000, value.fakturerbarOrdrePlassert?.fakturasum?.value) },
+            success = { value -> assertEquals(50_000.0, value.fakturerbarOrdrePlassert?.fakturasum?.value) },
             failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
         )
     }
@@ -59,7 +59,7 @@ private val eksempelGyldigBestilling = Bestilling(
         kundeEpost = "test@testesen.com",
         leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
         fakturadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
-        ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = 10_000))
+        ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = "10000"))
     ),
     time = LocalDateTime.now(),
 )

@@ -51,24 +51,15 @@ value class Pris private constructor(val value: Number) {
 // Ordremengde typer
 
 @JvmInline
-value class Kilogrammengde private constructor(val value: Float) {
+value class Mengde private constructor(val value: Int) {
     companion object {
-        fun of(value: Float): Kilogrammengde {
+        fun of(value: Int): Mengde {
             if (value <= 0) {
                 throw IllegalStateException("Kilogrammengde må være positiv")
             }
-            return Kilogrammengde(value)
+            return Mengde(value)
         }
     }
-}
-
-// TODO Oppgave 2b: Implmenter logikk for å hindre at enhetsmengde kan være et ugyldig tall
-@JvmInline
-value class Enhetsmengde(val value: Number)
-
-sealed class OrdreMengde {
-    data class Enhet(val mengde: Enhetsmengde) : OrdreMengde()
-    data class Kilo(val mengde: Kilogrammengde) : OrdreMengde()
 }
 
 data class PrisetBestilling(

@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
                 kundeEpost = "test@testesen.com",
                 leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
                 ordrelinjer = listOf(
-                    IkkeValidertBestilling.IkkeValidertOrdrelinje(mengde = 5, produktkode = "MagDust")
+                    IkkeValidertBestilling.IkkeValidertOrdrelinje(mengde = "5", produktkode = "MagDust")
                 )
             ), time = LocalDateTime.now()
         )
