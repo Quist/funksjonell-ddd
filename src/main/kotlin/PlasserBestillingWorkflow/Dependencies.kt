@@ -40,6 +40,9 @@ fun sjekkEpostStatus(email: String): Boolean {
     return email in verifiserteEposter
 }
 
+
+val gratisProdukt = "Poster av Magnus"
+
 // Testdata
 val produktPriser = mapOf(
     "MagDust" to 199.0,
@@ -53,7 +56,8 @@ val produktPriser = mapOf(
     "KortSlynge" to 129.0,
     "Karabinkrok" to 89.0,
     "Klatrebørste" to 59.0,
-    "CrashPad" to 2499.0
+    "CrashPad" to 2499.0,
+    gratisProdukt to 0.0
 )
 
 val verifiserteEposter = listOf(

@@ -40,16 +40,6 @@ class InternalTests {
         }
     }
 
-
-    @Test
-    @DisplayName("Ordren skal prises")
-    fun ordrePrises() {
-        val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
-        result.mapBoth(
-            success = { value -> assertEquals(50_000.0, value.fakturerbarOrdrePlassert?.fakturasum?.value) },
-            failure = { error -> fail("Expected the result to be success, but instead it was: " + result.error) }
-        )
-    }
 }
 
 private val eksempelGyldigBestilling = Bestilling(

@@ -14,7 +14,7 @@ fun initializePlasserBestillingWorkflow(
     lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,         // Dependency
     sendBekreftelsesEpost: SendBekreftelsesEpost                // Dependency
 ): PlasserBestillingWorkflow {
-    return fun(bestilling: Bestilling): Result<PlasserBestillingHendelser, Valideringsfeil> {
+    return fun(bestilling: Bestilling): Result<List<PlasserBestillingHendelse>, Valideringsfeil> {
         return validerBestilling(
             sjekkProduktKodeEksisterer, sjekkAdresseEksisterer, bestilling.bestilling
         )
@@ -116,6 +116,7 @@ private fun prisOrdre(
     validertBestilling: ValidertBestilling  // Input
 ): Result<PrisetBestilling, String> {
     val prisedeOrdrelinjer = validertBestilling.ordrelinjer.map { prisOrdreLinje(getProduktPris, it) }
+    val fakturaSum = prisedeOrdrelinjer.sumOf { it.linjePris.value.toDouble() }
     return Ok(
         PrisetBestilling(
             ordreId = validertBestilling.ordreId,
@@ -123,7 +124,7 @@ private fun prisOrdre(
             kundeInfo = validertBestilling.kundeInfo,
             leveringsadresse = validertBestilling.leveringsadresse,
             priseteOrdrelinjer = prisedeOrdrelinjer,
-            fakturaSum = Pris.of(1) // TODO Fix eller lag oppgave på denne
+            fakturaSum = Pris.of(fakturaSum)
         )
     )
 }
@@ -142,7 +143,7 @@ private fun bekreftBestilling(
     lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,  // Dependency
     sendBekreftelsesEpost: SendBekreftelsesEpost,        // Dependency
     prisetBestilling: PrisetBestilling                   // Input
-): Result<BekreftetBestilling, String> {
+): Result<BekreftetBestilling, Valideringsfeil> {
     lagBekreftelsesEpostHtml(prisetBestilling).let { letter ->
         return Ok(
             BekreftetBestilling(
@@ -161,20 +162,19 @@ data class BekreftetBestilling(val sendEpostResultat: SendEpostResultat, val pri
 private fun lagHendelser(
     prisetBestilling: PrisetBestilling,
     sendEpostResultat: SendEpostResultat
-): PlasserBestillingHendelser {
-    return PlasserBestillingHendelser(
-        bekreftelseSent = sendEpostResultat,
-        ordrePlassert = prisetBestilling,
-        fakturerbarOrdrePlassert = lagFakturerBarHendelse(prisetBestilling)
+): List<PlasserBestillingHendelse> {
+    val fakturerbarHendelse = PlasserBestillingHendelse.FakturaHendelse(
+        ordreId = prisetBestilling.ordreId,
+        fakturadresse = prisetBestilling.fakturaadresse,
+        fakturasum = prisetBestilling.fakturaSum
     )
-}
-
-private fun lagFakturerBarHendelse(prisetBestilling: PrisetBestilling): FakturerbarOrdrePlassert? {
-    return if (prisetBestilling.fakturaSum.value.toDouble() > 0) {
-        FakturerbarOrdrePlassert(
-            ordreId = prisetBestilling.ordreId,
-            fakturadresse = prisetBestilling.fakturaadresse,
-            fakturasum = prisetBestilling.fakturaSum
+    return listOf(
+        PlasserBestillingHendelse.BestillingAkseptertHendelse(prisetBestilling),
+        fakturerbarHendelse
+    ) + when (sendEpostResultat) {
+        SendEpostResultat.Sendt -> listOf(
+            PlasserBestillingHendelse.BekreftelseSentTilBrukerHendelse(prisetBestilling.kundeInfo.kundeEpost)
         )
-    } else null
+        SendEpostResultat.Ikke_sendt -> emptyList()
+    }
 }

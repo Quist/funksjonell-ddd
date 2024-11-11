@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 // ==================================
 
 // Hovedworkflow
-typealias PlasserBestillingWorkflow = (Bestilling) -> Result<PlasserBestillingHendelser, Valideringsfeil>
+typealias PlasserBestillingWorkflow = (Bestilling) -> Result<List<PlasserBestillingHendelse>, Valideringsfeil>
 // Input
 data class Bestilling(val bestilling: IkkeValidertBestilling, val time: LocalDateTime)
 data class IkkeValidertBestilling(
@@ -26,12 +26,11 @@ data class IkkeValidertBestilling(
 }
 
 // Output
-data class PlasserBestillingHendelser(
-    val bekreftelseSent: SendEpostResultat,
-    val ordrePlassert: PrisetBestilling, // Blir sendt til fraktavdelingen
-    val fakturerbarOrdrePlassert: FakturerbarOrdrePlassert? // Blir sendt til fakturaavdelingen kun hvis det sum >
-)
-data class FakturerbarOrdrePlassert(val ordreId: OrdreId, val fakturadresse: ValidertAdresse, val fakturasum: Pris)
+sealed class PlasserBestillingHendelse {
+    data class BekreftelseSentTilBrukerHendelse(val email: String) : PlasserBestillingHendelse()
+    data class BestillingAkseptertHendelse(val ordre: PrisetBestilling) : PlasserBestillingHendelse() // For fraktavdelingen
+    data class FakturaHendelse(val ordreId: OrdreId, val fakturadresse: ValidertAdresse, val fakturasum: Pris) : PlasserBestillingHendelse() // For fakturaavdelingen
+}
 
 // Ting som kan gå galt
 class UgyldigOrdreException(validationMessage: String) : RuntimeException(validationMessage)

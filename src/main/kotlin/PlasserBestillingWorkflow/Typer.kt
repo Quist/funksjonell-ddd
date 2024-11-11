@@ -32,7 +32,7 @@ value class Produktkode(val value: String)
 value class Pris private constructor(val value: Number) {
     companion object {
         fun of(value: Number): Pris {
-            if (value.toDouble() <= 0) {
+            if (value.toDouble() < 0) {
                 throw UgyldigOrdreException("Pris må være større en 0")
             }
             return Pris(value)

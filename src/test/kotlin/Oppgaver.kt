@@ -1,11 +1,12 @@
 import PlasserBestillingWorkflow.*
 import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
+import com.github.michaelbull.result.getOrThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
+import kotlin.test.DefaultAsserter.assertNull
 
 class Oppgaver {
 
@@ -73,7 +74,6 @@ class Oppgaver {
             )
             assertThrows<EpostIkkeVerifisert> { plasserBestillingWorkflow(bestilling) }
         }
-
     }
 
     @Test
@@ -88,10 +88,31 @@ class Oppgaver {
     }
 
     @Test
-    @DisplayName("Oppgave 4a: Prisede ordrelinjer")
+    @DisplayName("Oppgave 4a: Workflow Hendelser")
     fun oppgave4a() {
-        // TODO Lag oppgave eller fjern.
+        val result = plasserBestillingWorkflow(eksempelGyldigBestilling)
+        if (result.isErr) {
+            throw IllegalStateException("Forventet at resultatet skulle være Ok.")
+        }
+        throw NotImplementedError("Ikke implementert: Sjekk at det returneres en BekreftelseSent-hendelse")
     }
+
+    @Test
+    @DisplayName("Oppgave 4b: FakturaEvent blir ikke generert når summen er 0")
+    fun oppgave4b() {
+        val bestilling = eksempelGyldigBestilling.copy(
+            bestilling = eksempelGyldigBestilling.bestilling.copy(
+                ordrelinjer = listOf(IkkeValidertOrdrelinje(gratisProdukt, "50"))
+            )
+        )
+
+        val fakturaHendelse = plasserBestillingWorkflow(bestilling)
+            .getOrThrow({throw IllegalStateException()}) // Unwraps the result, throwing if it's an error
+            .find { it is PlasserBestillingHendelse.FakturaHendelse } as? PlasserBestillingHendelse.FakturaHendelse
+
+        assertNull("Forventet ikke BestillingPlassert-hendelse", fakturaHendelse)
+    }
+
 }
 
 private val eksempelGyldigBestilling = Bestilling(
