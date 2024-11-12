@@ -2,7 +2,6 @@ import PlasserBestillingWorkflow.*
 import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.getOrThrow
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
@@ -19,61 +18,56 @@ class Oppgaver {
         ::sendBekreftelsesEpost
     )
 
-    @Nested
-    @DisplayName("Del 1 - Validering")
-    inner class Del1 {
-
-        @Test
-        @DisplayName("Oppgave 1a: Gjør det umulig å lage ValidertAdresse uten gateadresse")
-        fun oppgave1a() {
-            assertThrows<UgyldigAdresse> {
-                ValidertAdresse("", 0)
-            }
+    @Test
+    @DisplayName("Oppgave 1a: Gjør det umulig å lage ValidertAdresse uten gateadresse")
+    fun oppgave1a() {
+        assertThrows<UgyldigAdresse> {
+            ValidertAdresse("", 0)
         }
+    }
 
-        @Test
-        @DisplayName("Oppgave 1b: Gjør det umulig å sende inn en bestilling uten et gyldig postnummer")
-        fun oppgave1b() {
-            val bestilling = eksempelGyldigBestilling.copy(
-                bestilling = eksempelGyldigBestilling.bestilling.copy(
-                    leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "-55")
-                )
+    @Test
+    @DisplayName("Oppgave 1b: Gjør det umulig å sende inn en bestilling uten et gyldig postnummer")
+    fun oppgave1b() {
+        val bestilling = eksempelGyldigBestilling.copy(
+            bestilling = eksempelGyldigBestilling.bestilling.copy(
+                leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "-55")
             )
-            assertThrows<UgyldigAdresse> { plasserBestillingWorkflow(bestilling) }
-        }
+        )
+        assertThrows<UgyldigAdresse> { plasserBestillingWorkflow(bestilling) }
+    }
 
-        @Test
-        @DisplayName("Oppgave 1c: Gjør det umulig å sende inn en ukjent adresse")
-        fun oppgave1c() {
-            val bestilling = eksempelGyldigBestilling.copy(
-                bestilling = eksempelGyldigBestilling.bestilling.copy(
-                    leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Ukjent Adresse", "5211")
-                )
+    @Test
+    @DisplayName("Oppgave 1c: Gjør det umulig å sende inn en ukjent adresse")
+    fun oppgave1c() {
+        val bestilling = eksempelGyldigBestilling.copy(
+            bestilling = eksempelGyldigBestilling.bestilling.copy(
+                leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Ukjent Adresse", "5211")
             )
-            assertThrows<UkjentAdresse> { plasserBestillingWorkflow(bestilling) }
-        }
+        )
+        assertThrows<UkjentAdresse> { plasserBestillingWorkflow(bestilling) }
+    }
 
-        @Test
-        @DisplayName("Oppgave 2a: Valider epost")
-        fun oppgave2a() {
-            val bestilling = eksempelGyldigBestilling.copy(
-                bestilling = eksempelGyldigBestilling.bestilling.copy(
-                    kundeEpost = "testeposten"
-                )
+    @Test
+    @DisplayName("Oppgave 2a: Valider epost")
+    fun oppgave2a() {
+        val bestilling = eksempelGyldigBestilling.copy(
+            bestilling = eksempelGyldigBestilling.bestilling.copy(
+                kundeEpost = "testeposten"
             )
-            assertThrows<UgyldigEpost> { plasserBestillingWorkflow(bestilling) }
-        }
+        )
+        assertThrows<UgyldigEpost> { plasserBestillingWorkflow(bestilling) }
+    }
 
-        @Test
-        @DisplayName("Oppgave 2b: Sjekk verifisert status")
-        fun oppgave2b() {
-            val bestilling = eksempelGyldigBestilling.copy(
-                bestilling = eksempelGyldigBestilling.bestilling.copy(
-                    kundeEpost = "ikke_verifisert_epost@hotmail.com"
-                )
+    @Test
+    @DisplayName("Oppgave 2b: Sjekk verifisert status")
+    fun oppgave2b() {
+        val bestilling = eksempelGyldigBestilling.copy(
+            bestilling = eksempelGyldigBestilling.bestilling.copy(
+                kundeEpost = "ikke_verifisert_epost@hotmail.com"
             )
-            assertThrows<EpostIkkeVerifisert> { plasserBestillingWorkflow(bestilling) }
-        }
+        )
+        assertThrows<EpostIkkeVerifisert> { plasserBestillingWorkflow(bestilling) }
     }
 
     @Test
