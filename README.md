@@ -86,15 +86,17 @@ I det Magnus klipper seg inn i første klipp, tar han opp et problem rundt postn
 _"Ahh",_- tenker du inne i deg. Hvis det er sånn de snakker om det, så bør vi nok også modelere det sånn.
 
 * **Innfør en ny type, `Postnummer`. Endre feltet postnummer i `ValidertAdresse` til å være av denne typen. `Postnummer` skal ha som invariant at postnummer er et tall mellom 0001 og 9999. Du kan kaste en `ugyldigAdresse`-exception om det ikke er det.**
+* **Sjekk at testen passerer.**
 
 ### Oppgave 1c 
-Magnus forsetter å prate mens han klatrer oppover. Han forteller om at selv om det formelt sett er gyldige adresser som sendes inn, så hender det at adressen rett og slett ikke finnes!
+Magnus forsetter å prate mens han klatrer oppover. Han forteller om at selv om det formelt sett er _gyldige adresser_ som sendes inn, så hender det at adressen rett og slett ikke finnes!
 Du feilsøker litt og ser fort at et teammedlemm fra et konkurrende konsulentselskap har lagt igjen en TODO i `tilValidertAdresse`funksjonen.
 
-* **Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`.**
+* **Oppdater `sjekkAdresseEksisterer` i `Dependencies.kt` med testadressen angitt i `eksempelGyldigBestilling`**. Sjekk at testen passerer.
+* **Implementer en sjekk av at adressen faktisk finnes i `tilValidertAdresse`. Sjekk at testen passerer.**
 
 > [!NOTE]
-> Vi kan la det være her, men her kunne vi også valgt å innføre en ny type for å både reflektere en gyldig og eksisterende adresse:
+> Vi kan la være her, men her kunne vi også valgt å innføre en ny type for å både reflektere en gyldig og eksisterende adresse:
 > ```data class ValidertOgEksisterendeNorskAdresse ..```
 
 ### Oppgave 2a
@@ -103,21 +105,20 @@ Etter å ha toppet ut ruta, firer Magnus seg ned mot bakken. På vei ned fortell
 * **Implementer en validering av e-post som validerer at det ihvertfall er en alfakrøll i e-posten.**
 
 > [!TIP]
-> Du kan løse dette på flere måter. Ett eksempel er ved å innføre en egen e-post data class.
+> Prøv å gjør endringen "typedrevet". Endre typen i `Kundeinfo` til å være en (ny) validertEpost value class.
 
 ### Oppgave 2b
 I det Magnus setter foten på bakken igjen, hører du noen voldsomme skrik fra en langbeint klatrer i naboveggen. Magnus titter raskt bort, før han forteller videre om hvordan de ser for seg å modellere e-post.
-Ikke bare er den validert – en e-post skal verifiseres at den faktisk tilhører brukeren. Magnus foreslår derfor at dere endrer den delte mentale modellen for e-post til å være en slags union type alá `Verifiserte-post | Uverifiserte-post`
+Ikke bare er den _validert_ – en e-post skal verifiseres at den faktisk tilhører brukeren. Magnus foreslår derfor at dere endrer den delte mentale modellen for e-post til å være en slags union type alá `Verifiserte-post | Uverifiserte-post`
 
 ```kotlin
-sealed interface EpostStatus {
-    val ePpost: EpostStatus
-}
-data class ValidertBestilling(..., val ePost: EpostStatus)
+data class KundeInfo(val kundeId: KundeId, val kundeEpost: Epost)
 ```
-
-1. **Implementer to dataklasser, `VerifisertEpost` og `UverifisertEpost`, som arver fra Sealed Interface EpostStatus.**
-2. **Implementer de nødvendige kodeendringene i implementasjonen etter at domenetypene er oppdatert.**
+1. **Definer en ny type som fanger at en gyldig e-post kan være enten verifisert eller ikke verifisert. Du kan f.eks bruke et `sealed interface`**
+2. **Endre KundeInfo slik at `kundeEpost` er av den nye typen**
+3. **Ta i bruk den eksisterende `sjekkEpostStatus` dependencien for å sjekke om eposten er verifisert eller ikke**
+4. **Implementer eventuelle nødvenige kodedringer.**
+4. **Få testen til å assere.**
 
 > [!TIP]
 > Sjekk ut dokumentasjonen for Sealed Interface om du trenger hjelp 🧠
@@ -186,9 +187,9 @@ Magnus jobber ikke søndager når det er godt klatrevær.
 > [!Tips]
 > Adapter function
 
-### 🌟 Bonusoppgaver
+## 🌟 Bonusoppgaver
 
-#### Bruk Result-typen istedenfor å kaste exceptions
+### Bruk Result-typen istedenfor å kaste exceptions
 Refaktorere kodebasen til å bruke Result-typen i stedet for å kaste exceptions. 
 
 > [!TIP]

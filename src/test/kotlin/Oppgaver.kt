@@ -31,16 +31,16 @@ class Oppgaver {
     fun oppgave1b() {
         val bestilling = eksempelGyldigBestilling.copy(
             bestilling = eksempelGyldigBestilling.bestilling.copy(
-                leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "-55")
+                leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Bryggen", "-55")
             )
         )
         assertThrows<UgyldigAdresse> { plasserBestillingWorkflow(bestilling) }
     }
 
     @Test
-    @DisplayName("Oppgave 1c: Gjør det umulig å sende inn en ukjent adresse")
+    @DisplayName("Oppgave 1c: Valider at adressen finnes")
     fun oppgave1c() {
-        val bestilling = eksempelGyldigBestilling.copy(
+        val bestillingMedUkjentAdresse = eksempelGyldigBestilling.copy(
             bestilling = eksempelGyldigBestilling.bestilling.copy(
                 leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Ukjent Adresse", "5211")
             )
@@ -67,7 +67,11 @@ class Oppgaver {
                 kundeEpost = "ikke_verifisert_epost@hotmail.com"
             )
         )
-        assertThrows<EpostIkkeVerifisert> { plasserBestillingWorkflow(bestilling) }
+
+        val bekreftelseSendtHendelse = plasserBestillingWorkflow(bestilling)
+            .getOrThrow({throw IllegalStateException()}) // Unwraps the result, throwing if it's an error
+            .find { it is PlasserBestillingHendelse.BekreftelseSentTilBrukerHendelse }
+        assertNull("Forventet at det ikke skulle sendes en bekreftelse til bruker", bekreftelseSendtHendelse)
     }
 
     @Test
