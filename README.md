@@ -124,7 +124,7 @@ data class ValidertBestilling(..., val ePost: EpostStatus)
 > 
 > Det finnes en dependency Sjekke-postStatus som kan brukes. Husk at den bør sendes med i hovedfunksjonen.
 
-### Oppgave 3a
+### Oppgave 3
 Den høylytte klatreren kommer bort. Det viser seg at han heter Adam Ondra og er endel av virksomheten til Magnus. Adam forteller om enda et problem. Det kommer mange bestillinger inn i systemet som ikke har noen ordrelinjer! Da blir det bare støy for faktura- og regnskapsavdelingen.
 
 **Implementer en endring i domenetypene slik at listen aldri kan være tom.**
@@ -133,22 +133,26 @@ Den høylytte klatreren kommer bort. Det viser seg at han heter Adam Ondra og er
 > 
 > Konstruktøren i NonEmptyList returnerer et Result. Sjekk resultatet. Du kan kaste en `UgyldigeOrdreLinjer`-exception om listen var tom.
 
-### Del 2 Pris Bestilling
-TODO Oppgaver relatert til å prise bestillingen. Tema? Kanskje noe med agregat. Eller noen enklere oppgaver bare for å bli kjent med steget.
+### Oppgave 4a
+> [!TIP]
+> I domene-drevet design (DDD) er hendelser viktige konsepter som representerer noe som har skjedd i domenet. Hendelser brukes til å beskrive forretningsmessige tilstander eller endringer som er viktige for systemet å kjenne til. De formidler informasjon om endringer på en måte som kan brukes av andre deler av systemet eller eksterne systemer.
 
-### Del 3 Bekreft bestilling steg
-TODO Oppgave med å legge til e-post i bekreftelese-post
+Adam Ondra har modellert hovedfunksjonen vår til å returnere en liste av _hendelser_. Han ber deg forsikre deg om at alt er som det skal ved å fullføre noen Junit-tester han har startet på.
 
-### Del 4 Outputten av funksjonen – Events med sideeffekter
-TODO Oppgaver. Kanskje noe med å skrive/fylle ut tester på den faktiske outputten av funksjonen.
+* **Implementer en assert på at det returneres en hendelse av typen `BekreftelseSentTilBrukerHendelse`**.
 
-### 💰Del 5 -Videreutvikle designet 
-I denne delen av workshoppen jobber vi videre med endringer i kravene fra Magnus.
-Målet er å reflektere over hvordan endringer påvirker både domenemodellen og koden, og å se hvordan en domene-drevet tilnærming kan håndtere slike justeringer.
+### Oppgave 4b
+Magnus forteller at han gir bort gratis postere av han selv i nettbutikken. Problemet er at fakturaavdelingen hans mottar masse faktuaer på kr 0,-. Dette skaper bare støy.
 
-Det finnes ingen fasit her – det er opp til deg hvordan du velger å løse oppgavene, og poenget er å lære gjennom å eksperimentere og reflektere.Vi ser på 4 forskjellige typer endringer:
+* **Endre på implementasjonen av `lagHendelser` slik at det kun genereres en FakturaHendelse om fakturasum er større en 0,-.** 
 
-#### Oppgave Legge til fraktkostnader
+## 💰Oppgave 5 -  Videreutvikle designet 
+I denne delen av workshoppen jobber vi videre med endringer i kravene fra Magnus. Det er ingen fasit – det er opp til deg hvordan du velger å løse oppgavene.
+Du kan også velge hvilken av oppgavene du har lyst til å implementere.
+
+Målet er å reflektere over hvordan endringer påvirker både domenemodellen og koden, og å se hvordan en domene-dreven tilnærming kan håndtere slike justeringer.
+
+###  Oppgave 5a Legge til fraktkostnader
 Det viser seg at det er store problemer med inntjeningen på nettsalget. Magnus sier at han helt har glemt å tenke på at det koster penger for frakt!
 
 * **Legg til et steg for å legge til fraktkostader, f.eks etter prisOrdre-steget.**
@@ -157,14 +161,14 @@ Det viser seg at det er store problemer med inntjeningen på nettsalget. Magnus 
 > [!Note] 
 > Å definere det som et selvstendig steg kan være nyttig for å tydeligjøre hva som skjer i foretningsprosessen. 
 
-#### Oppgave Legge til støtte for VIP-kunder
+### Oppgave 5b Legge til støtte for VIP-kunder
 Magnus vil gjerne at alle klatrevenne hans skal få gratisk frakt. Han vil gjerne kalle det VIP-kunder, og tenker at det kan komme flere fordeler etterhvert.
 
 * Endre på `KundeInfo` i `ValidertBestilling` til å representere VIP-kunder
 * Legg til et steg, eller endre et steg, for å implementere dette.
 
 
-#### Oppgave Legge til støtte for promokoder
+### Oppgave 5c Legge til støtte for promokoder
 Etter en diskusjon med salgsteamet til Magnus kommer dere opp med følgende krav:
 
 * Når man legger inn en bestilling, _kan_ kunden sende inn en promokode.
@@ -174,7 +178,7 @@ Etter en diskusjon med salgsteamet til Magnus kommer dere opp med følgende krav
 > [!TIP]
 > Tilsynelatede uskylding, vil den siste kravet påvirke store deler av domenet vårt. Lykke til!
 
-#### Oppgave Implementere søndagsstengt
+### Oppgave 5d Implementere søndagsstengt
 Magnus jobber ikke søndager når det er godt klatrevær.
 
 **Implementer at systemet er helt søndagssteng**

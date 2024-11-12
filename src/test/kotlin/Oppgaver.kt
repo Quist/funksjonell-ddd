@@ -88,7 +88,7 @@ class Oppgaver {
         if (result.isErr) {
             throw IllegalStateException("Forventet at resultatet skulle være Ok.")
         }
-        throw NotImplementedError("Ikke implementert: Sjekk at det returneres en BekreftelseSent-hendelse")
+        throw NotImplementedError("Ikke implementert: Sjekk at det returneres en BekreftelseSentTilBrukerHendelse")
     }
 
     @Test
