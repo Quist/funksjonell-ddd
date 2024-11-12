@@ -77,7 +77,11 @@ Det er skrevet JUnit tester for flere av oppgavene. Det kan være et lurt sted �
 ### Oppgave 1a
 Magnus spør om du vil være ut å klatre. I det du sikrer Magnus og han er på vei opp i veggen, forteller han at han har fått noen sinte e-poster fra fraktavdelingen. De mottar masse bestillinger med ugyldige gateadresser.
 
-* **Endre `ValidertAdresse`-typen slik at konstruktøren blir privat. Legg til en companion object med en create-metode som sørger for at gateadressefeltet ikke et tomt.**
+```kotlin 
+data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
+```
+
+* **Endre `ValidertAdresse` slik at konstruktøren blir privat. Legg til en companion object med en create-metode som sørger for at gateadressefeltet ikke et tomt.**
 * **Husk å få testen til å passere!**
 
 ### Oppgave 1b
@@ -105,11 +109,12 @@ Etter å ha toppet ut ruta, firer Magnus seg ned mot bakken. På vei ned fortell
 * **Implementer en validering av e-post som validerer at det ihvertfall er en alfakrøll i e-posten.**
 
 > [!TIP]
-> Prøv å gjør endringen "typedrevet". Endre typen i `Kundeinfo` til å være en (ny) validertEpost value class.
+> Prøv å gjør endringen "typedrevet". Endre typen i `Kundeinfo` til å være en (ny) `ValidertEpost` value class.
 
 ### Oppgave 2b
 I det Magnus setter foten på bakken igjen, hører du noen voldsomme skrik fra en langbeint klatrer i naboveggen. Magnus titter raskt bort, før han forteller videre om hvordan de ser for seg å modellere e-post.
-Ikke bare er den _validert_ – en e-post skal verifiseres at den faktisk tilhører brukeren. Magnus foreslår derfor at dere endrer den delte mentale modellen for e-post til å være en slags union type alá `Verifiserte-post | Uverifiserte-post`
+Ikke bare er den _validert_ – en e-post skal verifiseres at den faktisk tilhører brukeren. 
+Magnus foreslår derfor at dere endrer den delte mentale modellen for e-post til å være en slags union type alá `Epost = VerifisertEpost(epost: ValidertEpost) | UverifisertEpost()`
 
 ```kotlin
 data class KundeInfo(val kundeId: KundeId, val kundeEpost: Epost)

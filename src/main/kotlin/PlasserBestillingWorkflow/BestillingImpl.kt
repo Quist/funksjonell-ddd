@@ -106,7 +106,10 @@ data class ValidertOrdrelinje(
 )
 
 data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
+
 data class KundeInfo(val kundeId: KundeId, val kundeEpost: String)
+typealias ValidertEpost = Nothing // Convert me into a class and use me
+typealias Epost = Nothing // Placeholder for oppgave 2b
 
 // ==================================
 // Pris bestilling steg
