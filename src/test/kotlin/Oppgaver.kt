@@ -3,6 +3,7 @@ import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.getOrThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import kotlin.test.DefaultAsserter.assertNull
@@ -45,7 +46,8 @@ class Oppgaver {
                 leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Ukjent Adresse", "5211")
             )
         )
-        assertThrows<UkjentAdresse> { plasserBestillingWorkflow(bestilling) }
+        assertDoesNotThrow { plasserBestillingWorkflow(eksempelGyldigBestilling) }
+        assertThrows<UkjentAdresse> { plasserBestillingWorkflow(bestillingMedUkjentAdresse) }
     }
 
     @Test
