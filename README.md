@@ -106,7 +106,7 @@ Du feilsøker litt og ser fort at et teammedlemm fra et konkurrende konsulentsel
 ### Oppgave 2a
 Etter å ha toppet ut ruta, firer Magnus seg ned mot bakken. På vei ned forteller han om et annet problem de har hatt: ugyldige e-poster som blir sendt inn i systemet.
 
-* **Implementer en validering av e-post som validerer at det ihvertfall er en alfakrøll i e-posten.**
+* **Implementer validering av e-post som validerer er en alfakrøll i e-posten og den er lengre en 2 tegn.**
 
 > [!TIP]
 > Prøv å gjør endringen "typedrevet". Endre typen i `Kundeinfo` til å være en (ny) `ValidertEpost` value class.
