@@ -176,7 +176,7 @@ private fun lagHendelser(
         fakturerbarHendelse
     ) + when (sendEpostResultat) {
         SendEpostResultat.Sendt -> listOf(
-            PlasserBestillingHendelse.BekreftelseSentTilBrukerHendelse(prisetBestilling.kundeInfo.kundeEpost)
+            PlasserBestillingHendelse.BekreftelseSentTilBrukerHendelse()
         )
         SendEpostResultat.Ikke_sendt -> emptyList()
     }
