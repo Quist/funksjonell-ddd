@@ -16,7 +16,8 @@ class Oppgaver {
         ::sjekkAdresseEksisterer,
         ::hentProduktPris,
         ::lagBekreftelsesEpostHtml,
-        ::sendBekreftelsesEpost
+        ::sendBekreftelsesEpost,
+        ::sjekkEpostStatus
     )
 
     @Test

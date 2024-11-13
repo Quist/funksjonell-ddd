@@ -116,6 +116,7 @@ I det Magnus setter foten på bakken igjen, hører du noen voldsomme skrik fra e
 Ikke bare er den _validert_ – en e-post skal verifiseres at den faktisk tilhører brukeren. 
 Magnus foreslår derfor at dere endrer den delte mentale modellen for e-post til å være en slags union type alá `Epost = VerifisertEpost(epost: ValidertEpost) | UverifisertEpost()`
 
+Hvis e-posten ikke er verifisert skal ordren fremdeles gå igjennom, men det skal ikke genereres en epost til brukeren.
 ```kotlin
 data class KundeInfo(val kundeId: KundeId, val kundeEpost: Epost)
 ```
