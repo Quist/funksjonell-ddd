@@ -134,15 +134,22 @@ data class KundeInfo(val kundeId: KundeId, val kundeEpost: Epost)
 ### Oppgave 3
 Den høylytte klatreren kommer bort. Det viser seg at han heter Adam Ondra og er endel av virksomheten til Magnus. Adam forteller om enda et problem. Det kommer mange bestillinger inn i systemet som ikke har noen ordrelinjer! Da blir det bare støy for faktura- og regnskapsavdelingen.
 
+```kotlin
+data class ValidertBestilling(
+    ..
+    val ordrelinjer: List<ValidertOrdrelinje>,
+)
+
+```
+
 **Implementer en endring i domenetypene slik at listen aldri kan være tom.**
 > [!TIP]
-> Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`.
+> Hint: Sjekk ut NonEmptyList typen som ligger under `utils/`. Konstruktøren i NonEmptyList returnerer et Result. Hva må du kjøre for å unwrappe resultatet?
 > 
-> Konstruktøren i NonEmptyList returnerer et Result. Sjekk resultatet. Du kan kaste en `UgyldigeOrdreLinjer`-exception om listen var tom.
 
 ### Oppgave 4a
 > [!TIP]
-> I domene-drevet design (DDD) er hendelser viktige konsepter som representerer noe som har skjedd i domenet. Hendelser brukes til å beskrive forretningsmessige tilstander eller endringer som er viktige for systemet å kjenne til. De formidler informasjon om endringer på en måte som kan brukes av andre deler av systemet eller eksterne systemer.
+> I domene-drevet design (DDD) er _hendelser_ viktige konsepter som representerer noe som har skjedd i domenet. Hendelser brukes til å beskrive forretningsmessige tilstander eller endringer som er viktige for systemet å kjenne til. De formidler informasjon om endringer på en måte som kan brukes av andre deler av systemet eller eksterne systemer.
 
 Adam Ondra har modellert hovedfunksjonen vår til å returnere en liste av _hendelser_. Han ber deg forsikre deg om at alt er som det skal ved å fullføre noen Junit-tester han har startet på.
 

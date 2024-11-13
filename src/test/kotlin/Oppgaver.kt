@@ -120,7 +120,7 @@ private val eksempelGyldigBestilling = Bestilling(
     bestilling = IkkeValidertBestilling(
         ordreId = "1",
         kundeId = "Adam Åndra",
-        kundeEpost = "test@testesen.com",
+        kundeEpost = "adam.ondra@climbing.com",
         leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
         fakturadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
         ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = "10000"))
