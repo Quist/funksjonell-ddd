@@ -168,11 +168,11 @@ Målet er å reflektere over hvordan endringer påvirker både domenemodellen og
 
 ###  🚚 Oppgave 5a Legge til fraktkostnader
 Det viser seg at det er store problemer med inntjeningen på nettsalget. Magnus sier at han helt har glemt å tenke på at det koster penger for frakt!
-Her kan du f.eks differensiere fraktkostnadene på postnummer (Nord-Norge, Svalbar, røkla etc).
+Her kan du f.eks differensiere fraktkostnadene på postnummer (Nord-Norge, Svalbard, røkla etc).
 
 Momenter å vurdere:
-* En mulighet er å legge til logikken i prising-steget, men det kan potentsielt introdusere kompleksitet og bugs i kode som fungerer i dag.
-* En annen mulighet er å legge det til som et eget steg. Da er det lettere å teste det i isolasjon, ansvaret for fraktkostnader ligger et sted.
+* Hvor skal logikken legges? En mulighet er i prising-steget, men det kan potentsielt introdusere kompleksitet og bugs i kode som fungerer i dag.
+* En annen mulighet er å legge det til som et eget steg. Da er det lettere å teste det i isolasjon og ansvaret for fraktkostnader kan ligge et sted.
 * Hvordan modellere selve prissettingen slik at det er fleksibelt?
 
 **Legg til logikk for å legge til fraktkostnader på en ordre. Spesifiser fraktkostnaded i eposten som blir bekreftet til bruker.**
@@ -180,14 +180,14 @@ Momenter å vurdere:
 > [!Note] 
 > Å definere det som et selvstendig steg kan være nyttig for å tydeligjøre hva som skjer i foretningsprosessen. 
 
-### Oppgave 5b Legge til støtte for VIP-kunder
+### 🌟Oppgave 5b Legge til støtte for VIP-kunder
 Magnus vil gjerne at alle klatrevenne hans skal få gratisk frakt. Han vil gjerne kalle det VIP-kunder, og tenker at det kan komme flere fordeler etterhvert.
 
-* Endre på `KundeInfo` i `ValidertBestilling` til å representere VIP-kunder
+* Finn et måte å endre modellen til `KundeInfo` i `ValidertBestilling` til å representere VIP-kunder.
 * Legg til et steg, eller endre et steg, for å implementere dette.
 
 
-### Oppgave 5c Legge til støtte for promokoder
+### 🤑Oppgave 5c Legge til støtte for promokoder
 Etter en diskusjon med salgsteamet til Magnus kommer dere opp med følgende krav:
 
 * Når man legger inn en bestilling, _kan_ kunden sende inn en promokode.
@@ -197,13 +197,15 @@ Etter en diskusjon med salgsteamet til Magnus kommer dere opp med følgende krav
 > [!TIP]
 > Tilsynelatede uskylding, vil den siste kravet påvirke store deler av domenet vårt. Lykke til!
 
-### Oppgave 5d Implementere søndagsstengt
+### 🧗 Oppgave 5d Implementere søndagsstengt
 Magnus jobber ikke søndager når det er godt klatrevær.
 
-**Implementer at systemet er helt søndagssteng**
+```kotlin
+typealias PlasserBestillingWorkflow = (Bestilling) -> Result<List<PlasserBestillingHendelse>, Valideringsfeil | WorkLessClimbMore>
+```
 
-> [!Tips]
-> Adapter function
+* **Implementer at systemet er helt søndagssteng**
+* **Endre returtypen til hovedfunksjonen vår til å reflektere at funksjonen kan feile med `WorkLessClimbMore`**
 
 ## 🌟 Bonusoppgaver
 
