@@ -166,11 +166,16 @@ Du kan også velge hvilken av oppgavene du har lyst til å implementere.
 
 Målet er å reflektere over hvordan endringer påvirker både domenemodellen og koden, og å se hvordan en domene-dreven tilnærming kan håndtere slike justeringer.
 
-###  Oppgave 5a Legge til fraktkostnader
+###  🚚 Oppgave 5a Legge til fraktkostnader
 Det viser seg at det er store problemer med inntjeningen på nettsalget. Magnus sier at han helt har glemt å tenke på at det koster penger for frakt!
+Her kan du f.eks differensiere fraktkostnadene på postnummer (Nord-Norge, Svalbar, røkla etc).
 
-* **Legg til et steg for å legge til fraktkostader, f.eks etter prisOrdre-steget.**
-* **Inkluderer fraktkostnaden i bekreftelsese-posten.**
+Momenter å vurdere:
+* En mulighet er å legge til logikken i prising-steget, men det kan potentsielt introdusere kompleksitet og bugs i kode som fungerer i dag.
+* En annen mulighet er å legge det til som et eget steg. Da er det lettere å teste det i isolasjon, ansvaret for fraktkostnader ligger et sted.
+* Hvordan modellere selve prissettingen slik at det er fleksibelt?
+
+**Legg til logikk for å legge til fraktkostnader på en ordre. Spesifiser fraktkostnaded i eposten som blir bekreftet til bruker.**
 
 > [!Note] 
 > Å definere det som et selvstendig steg kan være nyttig for å tydeligjøre hva som skjer i foretningsprosessen. 
