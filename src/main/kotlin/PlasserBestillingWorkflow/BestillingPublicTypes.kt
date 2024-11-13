@@ -48,7 +48,7 @@ typealias SjekkAdresseEksisterer = (IkkeValidertBestilling.IkkeValidertAdresse) 
 typealias HentProduktPris = (produktkode: Produktkode) -> Double
 typealias LagBekreftelsesEpostHtml = (PrisetBestilling) -> HtmlString
 typealias SendBekreftelsesEpost = (email: String, letter: HtmlString) -> SendEpostResultat
-typealias SjekkEpostValideringsStatus = (email: String) -> Boolean
+typealias SjekkEpostVerifiseringsStatus = (email: String) -> Boolean
 
 // Typer for dependencies
 enum class SendEpostResultat {

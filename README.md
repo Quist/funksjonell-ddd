@@ -119,11 +119,11 @@ Magnus foreslår derfor at dere endrer den delte mentale modellen for e-post til
 ```kotlin
 data class KundeInfo(val kundeId: KundeId, val kundeEpost: Epost)
 ```
-1. **Definer en ny type som fanger at en gyldig e-post kan være enten verifisert eller ikke verifisert. Du kan f.eks bruke et `sealed interface`**
-2. **Endre KundeInfo slik at `kundeEpost` er av den nye typen**
-3. **Ta i bruk den eksisterende `sjekkEpostStatus` dependencien for å sjekke om eposten er verifisert eller ikke**
-4. **Implementer eventuelle nødvenige kodedringer.**
-4. **Få testen til å assere.**
+1. **Definer en ny type som fanger at en gyldig e-post kan være enten verifisert eller ikke verifisert. Du kan f.eks bruke et `sealed interface`.**
+2. **Endre KundeInfo slik at `kundeEpost` er av den nye typen.**
+3. **Ta i bruk den eksisterende `SjekkEpostVerifiseringsStatus` dependencien for å sjekke om eposten er verifisert eller ikke. Den bør sendes med fra hovedfunksjonen.**
+4. **Implementer eventuelle nødvendige kodedringer.**
+4. **Få testen til å passere.**
 
 > [!TIP]
 > Sjekk ut dokumentasjonen for Sealed Interface om du trenger hjelp 🧠
