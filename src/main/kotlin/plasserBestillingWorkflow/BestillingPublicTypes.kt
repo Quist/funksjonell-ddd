@@ -1,4 +1,4 @@
-package PlasserBestillingWorkflow
+package plasserBestillingWorkflow
 
 import com.github.michaelbull.result.Result
 import java.lang.RuntimeException

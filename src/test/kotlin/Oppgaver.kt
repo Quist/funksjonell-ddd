@@ -1,5 +1,5 @@
-import PlasserBestillingWorkflow.*
-import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
+import plasserBestillingWorkflow.*
+import plasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.getOrThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

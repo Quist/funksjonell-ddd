@@ -1,4 +1,4 @@
-package PlasserBestillingWorkflow
+package plasserBestillingWorkflow
 
 @JvmInline
 value class OrdreId private constructor(val value: String) {
