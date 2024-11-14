@@ -1,4 +1,4 @@
-package plasserBestillingWorkflow
+package PlasserBestillingWorkflow
 
 // ==================================
 // Eksempelimplementasjoner av eksterne tjenester

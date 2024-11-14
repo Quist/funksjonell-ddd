@@ -1,5 +1,4 @@
-import plasserBestillingWorkflow.*
-import plasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
+import PlasserBestillingWorkflow.*
 import com.github.michaelbull.result.getOrThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -102,7 +101,7 @@ class Oppgaver {
     fun oppgave4b() {
         val bestilling = eksempelGyldigBestilling.copy(
             bestilling = eksempelGyldigBestilling.bestilling.copy(
-                ordrelinjer = listOf(IkkeValidertOrdrelinje(gratisProdukt, "50"))
+                ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje(gratisProdukt, "50"))
             )
         )
 
@@ -122,7 +121,7 @@ private val eksempelGyldigBestilling = Bestilling(
         kundeEpost = "adam.ondra@climbing.com",
         leveringsadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
         fakturadresse = IkkeValidertBestilling.IkkeValidertAdresse("Testveien 7", "2070"),
-        ordrelinjer = listOf(IkkeValidertOrdrelinje("MagDust", mengde = "10000"))
+        ordrelinjer = listOf(IkkeValidertBestilling.IkkeValidertOrdrelinje("MagDust", mengde = "10000"))
     ),
     time = LocalDateTime.now(),
 )

@@ -1,6 +1,6 @@
-package plasserBestillingWorkflow
+package PlasserBestillingWorkflow
 
-import plasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
+import PlasserBestillingWorkflow.IkkeValidertBestilling.IkkeValidertOrdrelinje
 import com.github.michaelbull.result.*
 
 

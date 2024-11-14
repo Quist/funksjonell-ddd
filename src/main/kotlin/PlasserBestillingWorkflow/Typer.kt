@@ -1,4 +1,4 @@
-package plasserBestillingWorkflow
+package PlasserBestillingWorkflow
 
 // Steg 1: Valider Bestilling
 data class ValidertBestilling(
