@@ -1,5 +1,41 @@
 package plasserBestillingWorkflow
 
+// Steg 1: Valider Bestilling
+data class ValidertBestilling(
+    val ordreId: OrdreId,
+    val kundeInfo: KundeInfo,
+    val leveringsadresse: ValidertAdresse,
+    val fakturaAdresse: ValidertAdresse,
+    val ordrelinjer: List<ValidertOrdrelinje>,
+)
+
+data class ValidertOrdrelinje(
+    val produktkode: Produktkode,
+    val ordreMengde: Mengde,
+)
+
+data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
+data class KundeInfo(val kundeId: KundeId, val kundeEpost: String)
+typealias ValidertEpost = Nothing // Placeholder for oppgave 2a
+typealias Epost = Nothing // Placeholder for oppgave 2b
+
+// Steg 2: Pris bestilling
+data class PrisetBestilling(
+    val ordreId: OrdreId,
+    val kundeInfo: KundeInfo,
+    val leveringsadresse: ValidertAdresse,
+    val fakturaadresse: ValidertAdresse,
+    val fakturaSum: Pris,
+    val priseteOrdrelinjer: List<PrisetOrdrelinje>
+)
+data class PrisetOrdrelinje(val linjePris: Pris)
+
+// Steg 3 - Bekreft Bestilling
+data class BekreftetBestilling(val sendEpostResultat: SendEpostResultat, val prisetBestilling: PrisetBestilling)
+
+
+// Hjelpetyper
+
 @JvmInline
 value class OrdreId private constructor(val value: String) {
     companion object {
@@ -24,7 +60,6 @@ value class KundeId private constructor(val value: String) {
     }
 }
 
-// Produktkode
 @JvmInline
 value class Produktkode(val value: String)
 
@@ -51,14 +86,3 @@ value class Mengde private constructor(val value: Int) {
         }
     }
 }
-
-data class PrisetBestilling(
-    val ordreId: OrdreId,
-    val kundeInfo: KundeInfo,
-    val leveringsadresse: ValidertAdresse,
-    val fakturaadresse: ValidertAdresse,
-    val fakturaSum: Pris,
-    val priseteOrdrelinjer: List<PrisetOrdrelinje>
-)
-
-data class PrisetOrdrelinje(val linjePris: Pris)

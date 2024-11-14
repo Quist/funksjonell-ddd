@@ -27,7 +27,7 @@ data class IkkeValidertBestilling(
 
 // Output
 sealed class PlasserBestillingHendelse {
-    class BekreftelseSentTilBrukerHendelse() : PlasserBestillingHendelse()
+    data object BekreftelseSentTilBrukerHendelse : PlasserBestillingHendelse()
     data class BestillingAkseptertHendelse(val ordre: PrisetBestilling) : PlasserBestillingHendelse() // For fraktavdelingen
     data class FakturaHendelse(val ordreId: OrdreId, val fakturadresse: ValidertAdresse, val fakturasum: Pris) : PlasserBestillingHendelse() // For fakturaavdelingen
 }

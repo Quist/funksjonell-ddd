@@ -5,7 +5,7 @@ import com.github.michaelbull.result.*
 
 
 // ==================================
-// Implementasjon av PlasserBestillingWorkflow
+// Implementasjon av PlasserBestilling Workflow
 // ==================================
 fun initializePlasserBestillingWorkflow(
     sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer,     // Dependency
@@ -14,10 +14,9 @@ fun initializePlasserBestillingWorkflow(
     lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,         // Dependency
     sendBekreftelsesEpost: SendBekreftelsesEpost                // Dependency
 ): PlasserBestillingWorkflow {
+
     return fun(bestilling: Bestilling): Result<List<PlasserBestillingHendelse>, Valideringsfeil> {
-        return validerBestilling(
-            sjekkProduktKodeEksisterer, sjekkAdresseEksisterer, bestilling.bestilling
-        )
+        return validerBestilling(sjekkProduktKodeEksisterer, sjekkAdresseEksisterer, bestilling.bestilling)
             .andThen { prisOrdre(hentProduktPris, it) }
             .andThen { bekreftBestilling(lagBekreftelsesEpostHtml, sendBekreftelsesEpost, it) }
             .andThen { Ok(lagHendelser(it.prisetBestilling, it.sendEpostResultat)) }
@@ -25,7 +24,7 @@ fun initializePlasserBestillingWorkflow(
 }
 
 // ==================================
-// Valider bestilling steg
+// Steg 1. Valider bestilling
 // ==================================
 private fun validerBestilling(
     sjekkProduktKodeEksisterer: SjekkProduktKodeEksisterer, // Dependency
@@ -61,8 +60,8 @@ private fun tilValiderteOrdrelinjer(
 }
 
 private fun tilValidertValidertOrdrelinje(
-    tilProduktKode: (String) -> Produktkode, // Dependency
-    ordrelinje: IkkeValidertOrdrelinje // Input
+    tilProduktKode: (String) -> Produktkode,    // Dependency
+    ordrelinje: IkkeValidertOrdrelinje          // Input
 ): ValidertOrdrelinje {
     return ValidertOrdrelinje(
         produktkode = tilProduktKode(ordrelinje.produktkode),
@@ -92,27 +91,8 @@ private fun tilValidertAdresse(
     return ValidertAdresse(adresse.gateadresse, adresse.postnummer.toInt())
 }
 
-data class ValidertBestilling(
-    val ordreId: OrdreId,
-    val kundeInfo: KundeInfo,
-    val leveringsadresse: ValidertAdresse,
-    val fakturaAdresse: ValidertAdresse,
-    val ordrelinjer: List<ValidertOrdrelinje>,
-)
-
-data class ValidertOrdrelinje(
-    val produktkode: Produktkode,
-    val ordreMengde: Mengde,
-)
-
-data class ValidertAdresse(val gateadresse: String, val postnummer: Number)
-
-data class KundeInfo(val kundeId: KundeId, val kundeEpost: String)
-typealias ValidertEpost = Nothing // Placeholder for oppgave 2a
-typealias Epost = Nothing // Placeholder for oppgave 2b
-
 // ==================================
-// Pris bestilling steg
+// Steg 2 - Pris bestilling
 // ==================================
 private fun prisOrdre(
     getProduktPris: HentProduktPris,        // Dependency
@@ -140,7 +120,7 @@ private fun prisOrdreLinje(getProduktPris: HentProduktPris, ordrelinje: Validert
 }
 
 // ==================================
-// Bekreft bestilling steg
+// Steg 3 - Bekreft bestilling
 // ==================================
 private fun bekreftBestilling(
     lagBekreftelsesEpostHtml: LagBekreftelsesEpostHtml,  // Dependency
@@ -157,10 +137,8 @@ private fun bekreftBestilling(
     }
 }
 
-data class BekreftetBestilling(val sendEpostResultat: SendEpostResultat, val prisetBestilling: PrisetBestilling)
-
 // ==================================
-// Lag hendelser
+// Steg 4 - Lag hendelser
 // ==================================
 private fun lagHendelser(
     prisetBestilling: PrisetBestilling,
@@ -176,7 +154,7 @@ private fun lagHendelser(
         fakturerbarHendelse
     ) + when (sendEpostResultat) {
         SendEpostResultat.Sendt -> listOf(
-            PlasserBestillingHendelse.BekreftelseSentTilBrukerHendelse()
+            PlasserBestillingHendelse.BekreftelseSentTilBrukerHendelse
         )
         SendEpostResultat.Ikke_sendt -> emptyList()
     }
